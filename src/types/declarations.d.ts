@@ -48,4 +48,7 @@ declare module 'lucide-react' {
   export const FileUp: IconType;
   export const FileCheck2: IconType;
   export const Trash2: IconType;
+  export const Sun: IconType;
+  export const Moon: IconType;
+  export const UserCheck: IconType;
 }

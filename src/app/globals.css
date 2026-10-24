@@ -1,61 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #080E1A;
-  --foreground: #F8FAFC;
+  /* Default: Clean Medical Porcelain Light Theme */
+  --bg-canvas: #F8FAFC;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #FFFFFF;
+  --bg-surface-subtle: #F1F5F9;
+  --bg-surface-accent: #F0F9FF;
+  
+  --border-subtle: #E2E8F0;
+  --border-medium: #CBD5E1;
+  --border-accent: #BAE6FD;
+  
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-inverse: #FFFFFF;
+  
+  --medical-blue: #0284C7;
+  --medical-blue-hover: #0369A1;
+  --medical-blue-subtle: #E0F2FE;
+  
+  --medical-teal: #0D9488;
+  --medical-teal-subtle: #F0FDFA;
+  
+  --medical-crimson: #BE123C;
+  --medical-crimson-subtle: #FFF1F2;
+  --medical-crimson-border: #FECDD3;
+  
+  --medical-emerald: #059669;
+  --medical-emerald-subtle: #ECFDF5;
+  
+  --medical-amber: #D97706;
+  --medical-amber-subtle: #FEF3C7;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.03);
+}
+
+.dark {
+  /* Sophisticated Deep Clinical Slate (Dark Mode) */
+  --bg-canvas: #090F1D;
+  --bg-surface: #0F1A2E;
+  --bg-surface-elevated: #152238;
+  --bg-surface-subtle: #1A2942;
+  --bg-surface-accent: rgba(14, 165, 233, 0.08);
+  
+  --border-subtle: #1E2E4A;
+  --border-medium: #2A3F63;
+  --border-accent: #0284C7;
+  
+  --text-primary: #F8FAFC;
+  --text-secondary: #CBD5E1;
+  --text-muted: #94A3B8;
+  --text-inverse: #0F172A;
+  
+  --medical-blue: #38BDF8;
+  --medical-blue-hover: #7DD3FC;
+  --medical-blue-subtle: rgba(14, 165, 233, 0.15);
+  
+  --medical-teal: #2DD4BF;
+  --medical-teal-subtle: rgba(20, 184, 166, 0.15);
+  
+  --medical-crimson: #FB7185;
+  --medical-crimson-subtle: rgba(244, 63, 94, 0.15);
+  --medical-crimson-border: rgba(244, 63, 94, 0.3);
+  
+  --medical-emerald: #34D399;
+  --medical-emerald-subtle: rgba(16, 185, 129, 0.15);
+  
+  --medical-amber: #FBBF24;
+  --medical-amber-subtle: rgba(245, 158, 11, 0.15);
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Glassmorphism surfaces */
+/* Ambient Medical Radial Glow */
+.medical-ambient-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.05) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(13, 148, 136, 0.05) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(2, 132, 199, 0.03) 0px, transparent 50%);
+}
+
+.dark .medical-ambient-bg {
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.12) 0px, transparent 60%),
+    radial-gradient(at 100% 0%, rgba(13, 148, 136, 0.1) 0px, transparent 60%),
+    radial-gradient(at 50% 100%, rgba(2, 132, 199, 0.08) 0px, transparent 60%);
+}
+
+/* Premium Medical Cards */
+.medical-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.medical-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-medium);
+}
+
+.medical-card-elevated {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: 1.25rem;
+  box-shadow: var(--shadow-md);
+}
+
+/* Backward compatibility for glass-panel classes */
 .glass-panel {
-  background: rgba(15, 23, 42, 0.7);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-sm);
+}
+
+.dark .glass-panel {
+  background: rgba(15, 26, 46, 0.85);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .glass-panel-elevated {
-  background: rgba(30, 41, 59, 0.6);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-medium);
+  box-shadow: var(--shadow-md);
+}
+
+.dark .glass-panel-elevated {
+  background: rgba(21, 34, 56, 0.9);
   backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.glass-pill {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+/* Reassuring Medical Pulse Indicator */
+@keyframes heart-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.85; }
 }
 
-/* Custom scrollbars */
+.animate-heart-pulse {
+  animation: heart-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom Medical Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #080E1A;
+  background: var(--bg-canvas);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: var(--border-medium);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: var(--text-muted);
 }
 
-/* Print styles for Physician Visit-Prep Brief */
+/* Print Optimization for Physician Package */
 @media print {
   body {
     background: white !important;
-    color: black !important;
+    color: #0F172A !important;
   }
   .no-print {
     display: none !important;
@@ -63,10 +195,11 @@ body {
   .print-only {
     display: block !important;
   }
-  .glass-panel, .glass-panel-elevated {
+  .medical-card, .medical-card-elevated, .glass-panel, .glass-panel-elevated {
     background: transparent !important;
-    border: 1px solid #E2E8F0 !important;
-    color: black !important;
+    border: 1px solid #CBD5E1 !important;
+    color: #0F172A !important;
     box-shadow: none !important;
+    break-inside: avoid;
   }
 }
