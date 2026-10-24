@@ -60,10 +60,7 @@ export default function CareSyncApp() {
       </div>
 
       {/* 2. Patient Context Card */}
-      <PatientCard
-        patient={patientEleanorVance}
-        onOpenIntake={() => setIsIntakeOpen(true)}
-      />
+      <PatientCard patient={patientEleanorVance} />
 
       {/* 3. Simple 2-Tab Navigation */}
       <div className="flex items-center justify-between border-b border-slate-800 pb-3 no-print">

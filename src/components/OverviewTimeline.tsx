@@ -19,7 +19,7 @@ import { NemotronResponse } from "@/lib/nemotron";
 
 interface OverviewTimelineProps {
   onSelectVisitPrepTab: () => void;
-  onOpenIntake: () => void;
+  onOpenIntake?: () => void;
   uploadedDocuments?: any[];
 }
 
@@ -329,13 +329,7 @@ export function OverviewTimeline({
             <Calendar className="w-3.5 h-3.5 text-teal-400" />
             Recent Healthcare Encounters &amp; Source Documents
           </h4>
-          <button
-            onClick={onOpenIntake}
-            className="text-xs text-teal-400 hover:text-teal-300 font-semibold flex items-center gap-1"
-          >
-            <PlusCircle className="w-3.5 h-3.5" />
-            <span>Upload New Document</span>
-          </button>
+          <span className="text-[11px] text-slate-400">3 Verified Records</span>
         </div>
 
         <div className="relative border-l-2 border-slate-800 ml-3 pl-5 space-y-4">

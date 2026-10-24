@@ -1,17 +1,16 @@
 "use client";
 
 import React from "react";
-import { User, AlertCircle, Heart, Pill, Calendar, PlusCircle, Sparkles } from "lucide-react";
+import { User, Heart, Pill, Calendar } from "lucide-react";
 import { Patient } from "@/types";
 
 interface PatientCardProps {
   patient: Patient;
-  onOpenIntake?: () => void;
 }
 
-export function PatientCard({ patient, onOpenIntake }: PatientCardProps) {
+export function PatientCard({ patient }: PatientCardProps) {
   return (
-    <div className="glass-panel rounded-2xl p-5 mb-6 border border-slate-800 shadow-xl relative overflow-hidden bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-950/90">
+    <div className="glass-panel rounded-2xl p-5 mb-5 border border-slate-800 shadow-xl relative overflow-hidden bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-950/90">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Patient Identity */}
         <div className="flex items-start gap-4">
@@ -29,7 +28,7 @@ export function PatientCard({ patient, onOpenIntake }: PatientCardProps) {
               </span>
             </div>
 
-            {/* Conditions Summary */}
+            {/* Conditions & Prescriptions Summary */}
             <div className="flex items-center gap-3 text-xs text-slate-300 mt-2 flex-wrap">
               <div className="flex items-center gap-1.5">
                 <Heart className="w-3.5 h-3.5 text-rose-400" />
@@ -38,21 +37,16 @@ export function PatientCard({ patient, onOpenIntake }: PatientCardProps) {
               <div className="hidden sm:inline text-slate-600">•</div>
               <div className="flex items-center gap-1.5">
                 <Pill className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Medications: <strong>5 Prescriptions</strong></span>
+                <span>Medications: <strong>5 Active Prescriptions</strong></span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Primary Action Button */}
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={onOpenIntake}
-            className="px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-bold flex items-center gap-2 shadow-lg shadow-teal-500/20 active:scale-95 transition-all"
-          >
-            <PlusCircle className="w-4 h-4" />
-            <span>Upload Doctor Note / Lab (PDF)</span>
-          </button>
+        {/* Status Indicator */}
+        <div className="flex items-center gap-2 text-xs text-slate-400 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800 self-start md:self-auto">
+          <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>Records In-Sync</span>
         </div>
       </div>
     </div>
