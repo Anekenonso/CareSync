@@ -45,4 +45,7 @@ declare module 'lucide-react' {
   export const UserPlus: IconType;
   export const HeartHandshake: IconType;
   export const FileSpreadsheet: IconType;
+  export const FileUp: IconType;
+  export const FileCheck2: IconType;
+  export const Trash2: IconType;
 }
