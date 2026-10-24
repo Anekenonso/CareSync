@@ -46,13 +46,10 @@ export default function RootLayout({
 
             {/* Care Context & Status */}
             <div className="flex items-center gap-3 text-xs">
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-slate-300">
-                <span className="text-slate-400">Caring for:</span>
-                <span className="font-semibold text-white">Eleanor Vance (Mother)</span>
-              </div>
-              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-teal-950/50 border border-teal-500/30 text-teal-300 font-medium">
-                <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
-                <span>Records Connected</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-slate-300">
+                <span className="w-2 h-2 rounded-full bg-teal-400"></span>
+                <span className="text-slate-400">Family Proxy Mode:</span>
+                <span className="font-semibold text-white">Active</span>
               </div>
             </div>
           </div>

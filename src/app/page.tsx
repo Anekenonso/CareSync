@@ -7,9 +7,9 @@ import {
   FileText,
   PlusCircle,
   Database,
-  ShieldCheck,
   ChevronDown,
   ChevronUp,
+  Sparkles,
 } from "lucide-react";
 import { PatientCard } from "@/components/PatientCard";
 import { OverviewTimeline } from "@/components/OverviewTimeline";
@@ -17,17 +17,61 @@ import { PhysicianVisitPrepView } from "@/components/PhysicianVisitPrepView";
 import { ZetarisConsole } from "@/components/ZetarisConsole";
 import { MeterlessMemoryView } from "@/components/MeterlessMemoryView";
 import { DocumentIntakeModal } from "@/components/DocumentIntakeModal";
+import { GettingStartedBanner } from "@/components/GettingStartedBanner";
 import { patientEleanorVance } from "@/data/mockClinicalData";
+import { Patient } from "@/types";
+
+const customFamilyMemberTemplate: Patient = {
+  id: "patient-custom",
+  name: "My Loved One",
+  mrn: "FAMILY-PROFILE-01",
+  dob: "Pending Setup",
+  age: 0,
+  gender: "Family Member",
+  primaryPhysician: "Pending Records",
+  allergies: [],
+  conditions: [],
+  activeMedications: [],
+  recentVitals: {
+    bloodPressure: "--",
+    heartRate: 0,
+    spO2: 0,
+    temperature: 0,
+    bmi: 0,
+    recordedAt: "None",
+  },
+};
 
 export default function CareSyncApp() {
   const [activeTab, setActiveTab] = useState<"overview" | "visitPrep" | "records">("overview");
+  const [activeProfile, setActiveProfile] = useState<"eleanor" | "custom">("eleanor");
   const [isIntakeOpen, setIsIntakeOpen] = useState(false);
   const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
 
+  const activePatient = activeProfile === "eleanor" ? patientEleanorVance : customFamilyMemberTemplate;
+
   return (
     <div className="space-y-6">
+      {/* Welcome & How It Works Onboarding Banner */}
+      <GettingStartedBanner
+        activeProfile={activeProfile}
+        onSelectProfile={setActiveProfile}
+        onOpenIntake={() => {
+          setActiveProfile("custom");
+          setIsIntakeOpen(true);
+        }}
+      />
+
       {/* Patient Profile Card */}
-      <PatientCard patient={patientEleanorVance} />
+      <PatientCard
+        patient={activePatient}
+        isDemo={activeProfile === "eleanor"}
+        onOpenIntake={() => {
+          setActiveProfile("custom");
+          setIsIntakeOpen(true);
+        }}
+        onSwitchToDemo={() => setActiveProfile("eleanor")}
+      />
 
       {/* Navigation Tabs Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3 no-print">
@@ -82,10 +126,21 @@ export default function CareSyncApp() {
       {/* Main Tab Views */}
       <div>
         {activeTab === "overview" && (
-          <OverviewTimeline onSelectVisitPrepTab={() => setActiveTab("visitPrep")} />
+          <OverviewTimeline
+            onSelectVisitPrepTab={() => setActiveTab("visitPrep")}
+            isCustomProfile={activeProfile === "custom"}
+            onOpenIntake={() => setIsIntakeOpen(true)}
+            onSwitchToDemo={() => setActiveProfile("eleanor")}
+          />
         )}
 
-        {activeTab === "visitPrep" && <PhysicianVisitPrepView />}
+        {activeTab === "visitPrep" && (
+          <PhysicianVisitPrepView
+            isCustomProfile={activeProfile === "custom"}
+            onOpenIntake={() => setIsIntakeOpen(true)}
+            onSwitchToDemo={() => setActiveProfile("eleanor")}
+          />
+        )}
 
         {activeTab === "records" && (
           <div className="space-y-6">
@@ -93,8 +148,14 @@ export default function CareSyncApp() {
             <div className="glass-panel rounded-2xl p-6 border border-slate-800">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h3 className="text-base font-bold text-white">Connected Patient Records</h3>
-                  <p className="text-xs text-slate-400">Records unified across Eleanor&apos;s healthcare network.</p>
+                  <h3 className="text-base font-bold text-white">
+                    {activeProfile === "eleanor" ? "Eleanor's Connected Patient Records" : "Connected Patient Records"}
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    {activeProfile === "eleanor"
+                      ? "Records unified in-situ across Hope Valley Primary Care, Quest Diagnostics, and QuickCare Urgent Clinic."
+                      : "Portals and document sources unified for this family profile."}
+                  </p>
                 </div>
                 <button
                   onClick={() => setIsIntakeOpen(true)}
@@ -105,34 +166,56 @@ export default function CareSyncApp() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-slate-200">Hope Valley Primary Care</span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-medium">Connected</span>
+              {activeProfile === "eleanor" ? (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-semibold text-slate-200">Hope Valley Primary Care</span>
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-medium">Connected</span>
+                    </div>
+                    <p className="text-xs text-slate-400">Dr. Marcus Chen, MD • Outpatient EHR</p>
+                    <div className="mt-3 text-[11px] text-slate-500">Last Synced: 2026-07-15 • 12 clinical notes</div>
                   </div>
-                  <p className="text-xs text-slate-400">Dr. Marcus Chen, MD • Outpatient EHR</p>
-                  <div className="mt-3 text-[11px] text-slate-500">Last Synced: 2026-07-15 • 12 clinical notes</div>
-                </div>
 
-                <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-slate-200">Quest Diagnostics</span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-medium">Connected</span>
+                  <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-semibold text-slate-200">Quest Diagnostics</span>
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-medium">Connected</span>
+                    </div>
+                    <p className="text-xs text-slate-400">Comprehensive Metabolic &amp; Renal Panels</p>
+                    <div className="mt-3 text-[11px] text-slate-500">Last Synced: 2026-10-18 • 18 lab observations</div>
                   </div>
-                  <p className="text-xs text-slate-400">Comprehensive Metabolic &amp; Renal Panels</p>
-                  <div className="mt-3 text-[11px] text-slate-500">Last Synced: 2026-10-18 • 18 lab observations</div>
-                </div>
 
-                <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-slate-200">QuickCare Urgent Clinic</span>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-medium">Connected</span>
+                  <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-semibold text-slate-200">QuickCare Urgent Clinic</span>
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-medium">Connected</span>
+                    </div>
+                    <p className="text-xs text-slate-400">Walk-in visit notes &amp; acute prescriptions</p>
+                    <div className="mt-3 text-[11px] text-slate-500">Last Synced: 2026-10-10 • 1 encounter note</div>
                   </div>
-                  <p className="text-xs text-slate-400">Walk-in visit notes &amp; acute prescriptions</p>
-                  <div className="mt-3 text-[11px] text-slate-500">Last Synced: 2026-10-10 • 1 encounter note</div>
                 </div>
-              </div>
+              ) : (
+                <div className="p-8 rounded-xl bg-slate-900/40 border border-dashed border-slate-800 text-center space-y-3">
+                  <p className="text-xs text-slate-400">
+                    No hospital portals or laboratory systems connected yet for this family member.
+                  </p>
+                  <div className="flex items-center justify-center gap-3">
+                    <button
+                      onClick={() => setIsIntakeOpen(true)}
+                      className="px-4 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs"
+                    >
+                      Upload First Document
+                    </button>
+                    <button
+                      onClick={() => setActiveProfile("eleanor")}
+                      className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 font-semibold text-xs border border-slate-700"
+                    >
+                      Explore Eleanor&apos;s Demo Sources
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Expandable Technical Verification Section for Evaluators / Engineers */}
@@ -202,7 +285,10 @@ export default function CareSyncApp() {
       <DocumentIntakeModal
         isOpen={isIntakeOpen}
         onClose={() => setIsIntakeOpen(false)}
-        onDocumentAdded={() => setActiveTab("overview")}
+        onDocumentAdded={() => {
+          setActiveProfile("custom");
+          setActiveTab("overview");
+        }}
       />
     </div>
   );

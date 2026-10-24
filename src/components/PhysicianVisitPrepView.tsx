@@ -11,11 +11,61 @@ import {
   HelpCircle,
   ShieldAlert,
   ArrowRight,
+  Sparkles,
+  PlusCircle,
 } from "lucide-react";
 import { patientEleanorVance, eleanorLabHistory } from "@/data/mockClinicalData";
 
-export function PhysicianVisitPrepView() {
+interface PhysicianVisitPrepViewProps {
+  isCustomProfile?: boolean;
+  onOpenIntake?: () => void;
+  onSwitchToDemo?: () => void;
+}
+
+export function PhysicianVisitPrepView({
+  isCustomProfile = false,
+  onOpenIntake,
+  onSwitchToDemo,
+}: PhysicianVisitPrepViewProps) {
   const [copied, setCopied] = useState(false);
+
+  if (isCustomProfile) {
+    return (
+      <div className="space-y-6">
+        <div className="glass-panel rounded-2xl p-8 border border-dashed border-teal-500/40 text-center space-y-5 bg-gradient-to-b from-slate-900/60 to-slate-950">
+          <div className="w-16 h-16 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-400 mx-auto flex items-center justify-center shadow-lg shadow-teal-500/10">
+            <Stethoscope className="w-8 h-8" />
+          </div>
+          <div className="max-w-lg mx-auto space-y-2">
+            <h3 className="text-xl font-bold text-white tracking-tight">
+              No Doctor Visit-Prep Package Generated Yet
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              CareSync automatically synthesizes this 1-click visit brief once you upload records for your loved one.
+              It distills complex medical chronologies into a 1-page handout for the doctor with high-priority discussion questions.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <button
+              onClick={onOpenIntake}
+              className="px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-teal-500/25 active:scale-95 transition-all"
+            >
+              <PlusCircle className="w-4 h-4" />
+              Upload Medical Record
+            </button>
+            <button
+              onClick={onSwitchToDemo}
+              className="px-5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center gap-2 active:scale-95 transition-all"
+            >
+              <Sparkles className="w-4 h-4 text-teal-400" />
+              View Eleanor Vance&apos;s Sample Doctor Brief
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleCopy = () => {
     const briefText = `CARESYNC PHYSICIAN ENCOUNTER BRIEF

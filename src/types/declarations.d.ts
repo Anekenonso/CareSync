@@ -41,4 +41,8 @@ declare module 'lucide-react' {
   export const Server: IconType;
   export const RefreshCw: IconType;
   export const Lock: IconType;
+  export const Compass: IconType;
+  export const UserPlus: IconType;
+  export const HeartHandshake: IconType;
+  export const FileSpreadsheet: IconType;
 }

@@ -16,14 +16,23 @@ import {
   ExternalLink,
   Send,
   HelpCircle,
+  PlusCircle,
 } from "lucide-react";
 import { NemotronResponse } from "@/lib/nemotron";
 
 interface OverviewTimelineProps {
   onSelectVisitPrepTab: () => void;
+  isCustomProfile?: boolean;
+  onOpenIntake?: () => void;
+  onSwitchToDemo?: () => void;
 }
 
-export function OverviewTimeline({ onSelectVisitPrepTab }: OverviewTimelineProps) {
+export function OverviewTimeline({
+  onSelectVisitPrepTab,
+  isCustomProfile = false,
+  onOpenIntake,
+  onSwitchToDemo,
+}: OverviewTimelineProps) {
   const [loading, setLoading] = useState(false);
   const [userQuery, setUserQuery] = useState("");
   const [analysisResult, setAnalysisResult] = useState<NemotronResponse | null>(null);
@@ -47,6 +56,60 @@ export function OverviewTimeline({ onSelectVisitPrepTab }: OverviewTimelineProps
       setLoading(false);
     }
   };
+
+  if (isCustomProfile) {
+    return (
+      <div className="space-y-6">
+        <div className="glass-panel rounded-2xl p-8 border border-dashed border-teal-500/40 text-center space-y-5 bg-gradient-to-b from-slate-900/60 to-slate-950">
+          <div className="w-16 h-16 rounded-2xl bg-teal-500/10 border border-teal-500/20 text-teal-400 mx-auto flex items-center justify-center shadow-lg shadow-teal-500/10">
+            <FileText className="w-8 h-8" />
+          </div>
+          <div className="max-w-lg mx-auto space-y-2">
+            <h3 className="text-xl font-bold text-white tracking-tight">
+              Start Building Your Loved One&apos;s Health Timeline
+            </h3>
+            <p className="text-xs text-slate-300 leading-relaxed">
+              No medical records have been connected for this family profile yet. Upload a lab report (PDF), 
+              an after-visit doctor summary, or discharge paperwork to let CareSync extract medications, 
+              track lab trends, and check for drug-disease safety risks.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <button
+              onClick={onOpenIntake}
+              className="px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-teal-500/25 active:scale-95 transition-all"
+            >
+              <PlusCircle className="w-4 h-4" />
+              Upload First Medical Record (PDF / Notes)
+            </button>
+            <button
+              onClick={onSwitchToDemo}
+              className="px-5 py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 border border-slate-700 font-semibold text-xs flex items-center gap-2 active:scale-95 transition-all"
+            >
+              <Sparkles className="w-4 h-4 text-teal-400" />
+              Switch to Eleanor Vance Demo Story
+            </button>
+          </div>
+
+          <div className="mt-6 pt-6 border-t border-slate-800/80 grid grid-cols-1 md:grid-cols-3 gap-3 text-left">
+            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] text-slate-400">
+              <strong className="text-white block mb-1">1. Add Lab PDFs</strong>
+              Quest, Labcorp, or hospital metabolic panels are parsed into trend charts.
+            </div>
+            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] text-slate-400">
+              <strong className="text-white block mb-1">2. Medication Cross-Check</strong>
+              Specialist prescriptions and urgent care medications are reconciled automatically.
+            </div>
+            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] text-slate-400">
+              <strong className="text-white block mb-1">3. Doctor Encounter Brief</strong>
+              Prepares a 1-page summary with prioritized discussion questions for visits.
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
