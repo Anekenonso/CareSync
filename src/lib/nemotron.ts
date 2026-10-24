@@ -6,6 +6,7 @@ export interface NemotronResponse {
   reasoningTrace: NemotronReasoningStep[];
   visitPrep: PhysicianVisitPrep;
   rawThought?: string;
+  thought?: string;
   source: "NVIDIA_NEMOTRON_LIVE" | "EVIDENCE_FALLBACK";
 }
 

@@ -148,13 +148,13 @@ export function OverviewTimeline({ onSelectVisitPrepTab }: OverviewTimelineProps
             </div>
 
             {/* Collapsible Clinical Reasoning Trace (<thought>) */}
-            {showThinkingTrace && analysisResult.thought && (
+            {showThinkingTrace && (analysisResult.thought || analysisResult.rawThought) && (
               <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs text-slate-300 space-y-2 font-mono">
                 <div className="text-teal-400 font-semibold mb-1 flex items-center gap-1.5">
                   <span>Chain-of-Reasoning Trace:</span>
                 </div>
                 <div className="whitespace-pre-wrap leading-relaxed text-slate-400 max-h-60 overflow-y-auto pr-2">
-                  {analysisResult.thought}
+                  {analysisResult.thought || analysisResult.rawThought}
                 </div>
               </div>
             )}
