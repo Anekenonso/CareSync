@@ -1,0 +1,44 @@
+declare module 'lucide-react' {
+  import * as React from 'react';
+  export type IconType = React.FC<React.SVGProps<SVGSVGElement> & { size?: number | string; className?: string }>;
+
+  export const ShieldAlert: IconType;
+  export const Database: IconType;
+  export const Brain: IconType;
+  export const HeartPulse: IconType;
+  export const Activity: IconType;
+  export const PlusCircle: IconType;
+  export const Sparkles: IconType;
+  export const FileText: IconType;
+  export const Upload: IconType;
+  export const CheckCircle2: IconType;
+  export const AlertCircle: IconType;
+  export const X: IconType;
+  export const Layers: IconType;
+  export const ShieldCheck: IconType;
+  export const ArrowRight: IconType;
+  export const AlertTriangle: IconType;
+  export const Clock: IconType;
+  export const ChevronDown: IconType;
+  export const ChevronUp: IconType;
+  export const ArrowUpRight: IconType;
+  export const ArrowDownRight: IconType;
+  export const Send: IconType;
+  export const CheckCircle: IconType;
+  export const ExternalLink: IconType;
+  export const User: IconType;
+  export const Heart: IconType;
+  export const Pill: IconType;
+  export const Calendar: IconType;
+  export const Stethoscope: IconType;
+  export const Printer: IconType;
+  export const Copy: IconType;
+  export const Check: IconType;
+  export const FileCheck: IconType;
+  export const HelpCircle: IconType;
+  export const Info: IconType;
+  export const Play: IconType;
+  export const Server: IconType;
+  export const RefreshCw: IconType;
+  export const Lock: IconType;
+}
