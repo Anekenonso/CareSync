@@ -4,11 +4,12 @@ import React, { useState } from "react";
 import {
   Clock,
   Stethoscope,
-  Database,
-  Activity,
-  PlusCircle,
-  Sparkles,
   FileText,
+  PlusCircle,
+  Database,
+  ShieldCheck,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { PatientCard } from "@/components/PatientCard";
 import { OverviewTimeline } from "@/components/OverviewTimeline";
@@ -19,87 +20,182 @@ import { DocumentIntakeModal } from "@/components/DocumentIntakeModal";
 import { patientEleanorVance } from "@/data/mockClinicalData";
 
 export default function CareSyncApp() {
-  const [activeTab, setActiveTab] = useState<"overview" | "visitPrep" | "zetaris" | "meterless">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "visitPrep" | "records">("overview");
   const [isIntakeOpen, setIsIntakeOpen] = useState(false);
+  const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
 
   return (
-    <div>
-      {/* Patient Profile Card Header */}
+    <div className="space-y-6">
+      {/* Patient Profile Card */}
       <PatientCard patient={patientEleanorVance} />
 
       {/* Navigation Tabs Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 border-b border-slate-800 pb-3 no-print">
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3 no-print">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-sm">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`px-3.5 py-2 rounded-xl font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            className={`px-4 py-2.5 rounded-xl font-semibold transition-all flex items-center gap-2 whitespace-nowrap ${
               activeTab === "overview"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-md shadow-cyan-500/10"
+                ? "bg-teal-500/15 text-teal-300 border border-teal-500/30 shadow-sm"
                 : "text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent"
             }`}
           >
-            <Clock className="w-4 h-4 text-cyan-400" />
-            Overview &amp; 90-Day Trajectory
+            <Clock className="w-4 h-4 text-teal-400" />
+            Health Timeline &amp; Trends
           </button>
 
           <button
             onClick={() => setActiveTab("visitPrep")}
-            className={`px-3.5 py-2 rounded-xl font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            className={`px-4 py-2.5 rounded-xl font-semibold transition-all flex items-center gap-2 whitespace-nowrap ${
               activeTab === "visitPrep"
-                ? "bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-md shadow-teal-500/10"
+                ? "bg-teal-500/15 text-teal-300 border border-teal-500/30 shadow-sm"
                 : "text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent"
             }`}
           >
             <Stethoscope className="w-4 h-4 text-teal-400" />
-            Physician Visit-Prep Brief
+            Doctor Visit-Prep Package
           </button>
 
           <button
-            onClick={() => setActiveTab("zetaris")}
-            className={`px-3.5 py-2 rounded-xl font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-              activeTab === "zetaris"
-                ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-md shadow-cyan-500/10"
+            onClick={() => setActiveTab("records")}
+            className={`px-4 py-2.5 rounded-xl font-semibold transition-all flex items-center gap-2 whitespace-nowrap ${
+              activeTab === "records"
+                ? "bg-teal-500/15 text-teal-300 border border-teal-500/30 shadow-sm"
                 : "text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent"
             }`}
           >
-            <Database className="w-4 h-4 text-cyan-400" />
-            Zetaris Data Fabric
-          </button>
-
-          <button
-            onClick={() => setActiveTab("meterless")}
-            className={`px-3.5 py-2 rounded-xl font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-              activeTab === "meterless"
-                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-md shadow-emerald-500/10"
-                : "text-slate-400 hover:text-white hover:bg-slate-900 border border-transparent"
-            }`}
-          >
-            <Activity className="w-4 h-4 text-emerald-400" />
-            Meterless H-MEM &amp; Audit
+            <FileText className="w-4 h-4 text-teal-400" />
+            Connected Records &amp; Sources
           </button>
         </div>
 
-        {/* Action: Intake New Document */}
+        {/* Action: Add Health Record */}
         <button
           onClick={() => setIsIntakeOpen(true)}
-          className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 text-xs font-semibold flex items-center gap-2 transition-all active:scale-95 shrink-0"
+          className="px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-bold flex items-center gap-2 transition-all active:scale-95 shadow-md shadow-teal-500/20 shrink-0"
         >
-          <PlusCircle className="w-4 h-4 text-cyan-400" />
-          Intake Document
+          <PlusCircle className="w-4 h-4" />
+          Add Health Document
         </button>
       </div>
 
-      {/* Dynamic Tab Views */}
-      <div className="transition-opacity duration-200">
+      {/* Main Tab Views */}
+      <div>
         {activeTab === "overview" && (
           <OverviewTimeline onSelectVisitPrepTab={() => setActiveTab("visitPrep")} />
         )}
 
         {activeTab === "visitPrep" && <PhysicianVisitPrepView />}
 
-        {activeTab === "zetaris" && <ZetarisConsole />}
+        {activeTab === "records" && (
+          <div className="space-y-6">
+            {/* Connected Portals Summary */}
+            <div className="glass-panel rounded-2xl p-6 border border-slate-800">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-base font-bold text-white">Connected Patient Records</h3>
+                  <p className="text-xs text-slate-400">Records unified across Eleanor&apos;s healthcare network.</p>
+                </div>
+                <button
+                  onClick={() => setIsIntakeOpen(true)}
+                  className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs text-slate-200 font-medium flex items-center gap-1.5"
+                >
+                  <PlusCircle className="w-3.5 h-3.5 text-teal-400" />
+                  Upload New Record
+                </button>
+              </div>
 
-        {activeTab === "meterless" && <MeterlessMemoryView />}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold text-slate-200">Hope Valley Primary Care</span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-medium">Connected</span>
+                  </div>
+                  <p className="text-xs text-slate-400">Dr. Marcus Chen, MD • Outpatient EHR</p>
+                  <div className="mt-3 text-[11px] text-slate-500">Last Synced: 2026-07-15 • 12 clinical notes</div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold text-slate-200">Quest Diagnostics</span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-medium">Connected</span>
+                  </div>
+                  <p className="text-xs text-slate-400">Comprehensive Metabolic &amp; Renal Panels</p>
+                  <div className="mt-3 text-[11px] text-slate-500">Last Synced: 2026-10-18 • 18 lab observations</div>
+                </div>
+
+                <div className="p-4 rounded-xl bg-slate-900/60 border border-slate-800/80">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold text-slate-200">QuickCare Urgent Clinic</span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-medium">Connected</span>
+                  </div>
+                  <p className="text-xs text-slate-400">Walk-in visit notes &amp; acute prescriptions</p>
+                  <div className="mt-3 text-[11px] text-slate-500">Last Synced: 2026-10-10 • 1 encounter note</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Expandable Technical Verification Section for Evaluators / Engineers */}
+            <div className="glass-panel rounded-2xl border border-slate-800 overflow-hidden">
+              <button
+                onClick={() => setShowTechnicalDetails(!showTechnicalDetails)}
+                className="w-full p-4 flex items-center justify-between text-left hover:bg-slate-900/40 transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center">
+                    <Database className="w-4 h-4 text-teal-400" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-slate-200 uppercase tracking-wider">
+                      Technical Verification &amp; Data Fabric (Zetaris + Meterless)
+                    </h4>
+                    <p className="text-[11px] text-slate-400">
+                      Inspect live federated Spark SQL queries, 3-tier memory engine state, and cryptographic Trust Ledger logs.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-slate-400 font-medium">
+                  <span>{showTechnicalDetails ? "Hide Proofs" : "Inspect Proofs"}</span>
+                  {showTechnicalDetails ? (
+                    <ChevronUp className="w-4 h-4 text-slate-400" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4 text-slate-400" />
+                  )}
+                </div>
+              </button>
+
+              {showTechnicalDetails && (
+                <div className="p-6 border-t border-slate-800 space-y-8 bg-slate-950/40">
+                  {/* Zetaris Spark SQL Console */}
+                  <div>
+                    <div className="mb-3">
+                      <span className="text-xs font-bold text-teal-300 uppercase tracking-wider">
+                        1. Zetaris In-Situ Spark SQL Data Fabric
+                      </span>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        Queries disparate health silos without centralizing raw PHI.
+                      </p>
+                    </div>
+                    <ZetarisConsole />
+                  </div>
+
+                  {/* Meterless H-MEM Memory & Trust Ledger */}
+                  <div>
+                    <div className="mb-3">
+                      <span className="text-xs font-bold text-teal-300 uppercase tracking-wider">
+                        2. Meterless H-MEM Longitudinal Memory &amp; Audit Trail
+                      </span>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        3-tier memory architecture with conflict detection and append-only Trust Ledger.
+                      </p>
+                    </div>
+                    <MeterlessMemoryView />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Document Intake Modal */}
