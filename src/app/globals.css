@@ -1,79 +1,76 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Default: Clean Medical Porcelain Light Theme */
-  --bg-canvas: #F8FAFC;
+  /* GenAI Works Inspired Medical Palette (Warm Organic Porcelain & Evergreen) */
+  --bg-canvas: #FAFBF8;
   --bg-surface: #FFFFFF;
   --bg-surface-elevated: #FFFFFF;
-  --bg-surface-subtle: #F1F5F9;
-  --bg-surface-accent: #F0F9FF;
+  --bg-surface-subtle: #F3F6F1;
+  --bg-surface-accent: #ECFDF5;
   
-  --border-subtle: #E2E8F0;
-  --border-medium: #CBD5E1;
-  --border-accent: #BAE6FD;
+  --border-subtle: #E3E8DE;
+  --border-medium: #CBD5C8;
+  --border-accent: #A7F3D0;
   
-  --text-primary: #0F172A;
-  --text-secondary: #334155;
-  --text-muted: #64748B;
+  --text-primary: #0A0F0D;
+  --text-secondary: #27272A;
+  --text-muted: #71717A;
   --text-inverse: #FFFFFF;
   
-  --medical-blue: #0284C7;
-  --medical-blue-hover: #0369A1;
-  --medical-blue-subtle: #E0F2FE;
+  /* Primary Action: GenAI Works Evergreen */
+  --medical-primary: #0D6832;
+  --medical-primary-hover: #094D25;
+  --medical-primary-subtle: #ECFDF5;
   
-  --medical-teal: #0D9488;
-  --medical-teal-subtle: #F0FDFA;
+  /* Secondary / Accent: Electric Mint & Vitality */
+  --medical-accent: #10B981;
+  --medical-lime: #84CC16;
   
+  /* Clinical Safety Alerts */
   --medical-crimson: #BE123C;
   --medical-crimson-subtle: #FFF1F2;
   --medical-crimson-border: #FECDD3;
   
-  --medical-emerald: #059669;
-  --medical-emerald-subtle: #ECFDF5;
-  
   --medical-amber: #D97706;
   --medical-amber-subtle: #FEF3C7;
   
-  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
-  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03);
-  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.03);
+  --shadow-sm: 0 1px 2px 0 rgba(10, 15, 13, 0.04);
+  --shadow-md: 0 4px 6px -1px rgba(10, 15, 13, 0.06), 0 2px 4px -2px rgba(10, 15, 13, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(10, 15, 13, 0.07), 0 4px 6px -4px rgba(10, 15, 13, 0.03);
+  --shadow-xl: 0 20px 25px -5px rgba(10, 15, 13, 0.07), 0 8px 10px -6px rgba(10, 15, 13, 0.03);
 }
 
 .dark {
-  /* Sophisticated Deep Clinical Slate (Dark Mode) */
-  --bg-canvas: #090F1D;
-  --bg-surface: #0F1A2E;
-  --bg-surface-elevated: #152238;
-  --bg-surface-subtle: #1A2942;
-  --bg-surface-accent: rgba(14, 165, 233, 0.08);
+  /* GenAI Works Inspired Deep Forest Dark Slate */
+  --bg-canvas: #07100B;
+  --bg-surface: #0E1B15;
+  --bg-surface-elevated: #13241C;
+  --bg-surface-subtle: #182C22;
+  --bg-surface-accent: rgba(16, 185, 129, 0.08);
   
-  --border-subtle: #1E2E4A;
-  --border-medium: #2A3F63;
-  --border-accent: #0284C7;
+  --border-subtle: #1C3328;
+  --border-medium: #274737;
+  --border-accent: #10B981;
   
-  --text-primary: #F8FAFC;
-  --text-secondary: #CBD5E1;
-  --text-muted: #94A3B8;
-  --text-inverse: #0F172A;
+  --text-primary: #F4FBF7;
+  --text-secondary: #D1E0D7;
+  --text-muted: #8FA698;
+  --text-inverse: #07100B;
   
-  --medical-blue: #38BDF8;
-  --medical-blue-hover: #7DD3FC;
-  --medical-blue-subtle: rgba(14, 165, 233, 0.15);
+  --medical-primary: #10B981;
+  --medical-primary-hover: #34D399;
+  --medical-primary-subtle: rgba(16, 185, 129, 0.15);
   
-  --medical-teal: #2DD4BF;
-  --medical-teal-subtle: rgba(20, 184, 166, 0.15);
+  --medical-accent: #34D399;
+  --medical-lime: #A3E635;
   
   --medical-crimson: #FB7185;
   --medical-crimson-subtle: rgba(244, 63, 94, 0.15);
   --medical-crimson-border: rgba(244, 63, 94, 0.3);
-  
-  --medical-emerald: #34D399;
-  --medical-emerald-subtle: rgba(16, 185, 129, 0.15);
   
   --medical-amber: #FBBF24;
   --medical-amber-subtle: rgba(245, 158, 11, 0.15);
@@ -87,28 +84,37 @@
 body {
   background-color: var(--bg-canvas);
   color: var(--text-primary);
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.011em;
   overflow-x: hidden;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Ambient Medical Radial Glow */
+/* Ambient Organic Mint-Sky Mesh Glow */
 .medical-ambient-bg {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
   background-image: 
-    radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.05) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(13, 148, 136, 0.05) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(2, 132, 199, 0.03) 0px, transparent 50%);
+    radial-gradient(at 0% 0%, rgba(13, 104, 50, 0.04) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.04) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(14, 165, 233, 0.03) 0px, transparent 50%);
 }
 
 .dark .medical-ambient-bg {
   background-image: 
-    radial-gradient(at 0% 0%, rgba(14, 165, 233, 0.12) 0px, transparent 60%),
-    radial-gradient(at 100% 0%, rgba(13, 148, 136, 0.1) 0px, transparent 60%),
-    radial-gradient(at 50% 100%, rgba(2, 132, 199, 0.08) 0px, transparent 60%);
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 60%),
+    radial-gradient(at 100% 0%, rgba(52, 211, 153, 0.08) 0px, transparent 60%),
+    radial-gradient(at 50% 100%, rgba(14, 165, 233, 0.06) 0px, transparent 60%);
+}
+
+/* GenAI Works Signature Micro-Tag */
+.micro-tag {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 /* Premium Medical Cards */
@@ -140,7 +146,7 @@ body {
 }
 
 .dark .glass-panel {
-  background: rgba(15, 26, 46, 0.85);
+  background: rgba(14, 27, 21, 0.9);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -152,7 +158,7 @@ body {
 }
 
 .dark .glass-panel-elevated {
-  background: rgba(21, 34, 56, 0.9);
+  background: rgba(19, 36, 28, 0.92);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
@@ -187,7 +193,7 @@ body {
 @media print {
   body {
     background: white !important;
-    color: #0F172A !important;
+    color: #0A0F0D !important;
   }
   .no-print {
     display: none !important;
@@ -197,8 +203,8 @@ body {
   }
   .medical-card, .medical-card-elevated, .glass-panel, .glass-panel-elevated {
     background: transparent !important;
-    border: 1px solid #CBD5E1 !important;
-    color: #0F172A !important;
+    border: 1px solid #CBD5C8 !important;
+    color: #0A0F0D !important;
     box-shadow: none !important;
     break-inside: avoid;
   }

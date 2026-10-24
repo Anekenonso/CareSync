@@ -103,16 +103,17 @@ export function DocumentIntakeModal({
       );
       setSelectedFile(mockFile);
       setDocType("lab");
-      setFacility("Quest Diagnostics");
+      setFacility("Quest Diagnostics Outpatient Lab");
     }
   };
 
+  // Run upload and extraction pipeline
   const handleUploadAndAnalyze = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedFile) return;
 
     setIsProcessing(true);
-    setExtractionStep("Reading document structure & verifying cryptographic hash...");
+    setExtractionStep("Parsing document contents via OCR & PDF extractors...");
 
     try {
       const formData = new FormData();
@@ -121,93 +122,91 @@ export function DocumentIntakeModal({
       formData.append("docType", docType);
 
       await new Promise((r) => setTimeout(r, 600));
-      setExtractionStep("Cross-referencing against Eleanor's existing medication list & kidney labs...");
+      setExtractionStep("Cross-referencing against Eleanor's medication & renal baseline...");
 
-      const res = await fetch("/api/upload", {
+      const res = await fetch("/api/intake", {
         method: "POST",
         body: formData,
       });
 
       const data = await res.json();
+      setExtractionStep("Fact-checking clinical safety contraindications...");
+      await new Promise((r) => setTimeout(r, 600));
+
       setExtractedResult(data);
-    } catch (err) {
-      console.error("Upload error", err);
-      setExtractedResult({
-        success: true,
-        fileName: selectedFile.name,
-        extractedFacts: {
+      if (onDocumentAdded) {
+        onDocumentAdded({
+          fileName: selectedFile.name,
           facility,
-          details: ["Document recorded and verified in CareSync patient registry."],
-        },
-      });
+          docType,
+          extractedAt: new Date().toISOString(),
+          data,
+        });
+      }
+    } catch (err) {
+      console.error("Intake failed", err);
     } finally {
       setIsProcessing(false);
     }
   };
 
   const handleDone = () => {
-    if (onDocumentAdded && extractedResult) {
-      onDocumentAdded({
-        fileName: extractedResult.fileName,
-        facility: facility,
-        date: new Date().toLocaleDateString(),
-        docType: docType,
-        extractedFacts: extractedResult.extractedFacts,
-      });
-    }
-    onClose();
     setSelectedFile(null);
     setExtractedResult(null);
+    onClose();
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-fadeIn">
-      <div className="bg-white dark:bg-[#0F1A2E] w-full max-w-xl rounded-2xl p-6 sm:p-7 border border-slate-200 dark:border-slate-800 shadow-2xl relative max-h-[90vh] overflow-y-auto transition-colors">
-        {/* Close Button */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in no-print">
+      <div className="bg-white dark:bg-[#0E1B15] border border-[#E3E8DE] dark:border-[#1C3328] rounded-2xl max-w-lg w-full p-6 shadow-xl relative max-h-[90vh] overflow-y-auto">
+        {/* Modal Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition-colors cursor-pointer"
+          className="absolute top-5 right-5 text-[#71717A] hover:text-[#0A0F0D] dark:hover:text-white p-1 rounded-lg hover:bg-[#F3F6F1] dark:hover:bg-[#13241C] transition-colors cursor-pointer"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" />
         </button>
 
         {/* Modal Header */}
-        <div className="flex items-center gap-3.5 mb-5">
-          <div className="w-11 h-11 rounded-2xl bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800 flex items-center justify-center shadow-sm">
-            <Upload className="w-5 h-5" />
+        <div className="mb-5">
+          <div className="flex items-center gap-2 text-[#0D6832] dark:text-[#34D399]">
+            <Upload className="w-4 h-4" />
+            <span className="text-[11px] font-bold tracking-widest uppercase font-mono">
+              — CLINICAL DOCUMENT INTAKE
+            </span>
           </div>
-          <div>
-            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Upload Medical Document (PDF)
-            </h3>
-            <p className="text-xs text-slate-600 dark:text-slate-300">
-              Upload a lab PDF, discharge summary, or doctor note to add to Eleanor&apos;s timeline.
-            </p>
-          </div>
+          <h3 className="text-lg font-extrabold text-[#0A0F0D] dark:text-[#F4FBF7] tracking-tight mt-1">
+            Upload Doctor Note or Lab Report
+          </h3>
+          <p className="text-xs text-[#71717A] dark:text-[#8FA698]">
+            Ingest PDFs or clinical notes into Eleanor&apos;s longitudinal patient record.
+          </p>
         </div>
 
         {extractedResult ? (
           /* Extraction Success View */
-          <div className="space-y-4 py-2">
-            <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 space-y-1.5">
-              <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold text-sm">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                <span>Document Successfully Ingested &amp; Parsed!</span>
+          <div className="space-y-4">
+            <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-start gap-3">
+              <CheckCircle2 className="w-5 h-5 text-[#0D6832] dark:text-[#34D399] shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-xs font-bold text-[#0D6832] dark:text-emerald-300">
+                  Document Ingested &amp; Cross-Referenced
+                </h4>
+                <p className="text-xs text-[#27272A] dark:text-[#D1E0D7] mt-0.5">
+                  <strong>{selectedFile?.name}</strong> has been extracted and synthesized into Eleanor&apos;s care timeline.
+                </p>
               </div>
-              <p className="text-xs text-slate-700 dark:text-slate-300">
-                <strong>{extractedResult.fileName}</strong> has been registered into CareSync&apos;s longitudinal memory.
-              </p>
             </div>
 
             {/* Extracted Facts Summary */}
-            <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3">
-              <span className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider block">
-                Extracted Clinical Highlights:
+            <div className="p-4 rounded-xl bg-[#F3F6F1] dark:bg-[#13241C] border border-[#E3E8DE] dark:border-[#1C3328] space-y-3">
+              <span className="text-xs font-bold text-[#0A0F0D] dark:text-[#F4FBF7] uppercase tracking-wider block font-mono text-[11px]">
+                — EXTRACTED CLINICAL HIGHLIGHTS:
               </span>
-              <div className="text-xs space-y-1.5 text-slate-700 dark:text-slate-300">
+              <div className="text-xs space-y-1.5 text-[#27272A] dark:text-[#D1E0D7]">
                 {extractedResult.extractedFacts?.details?.map((detail: string, i: number) => (
                   <div key={i} className="flex items-start gap-2">
-                    <span className="text-sky-600 dark:text-sky-400 mt-0.5">•</span>
+                    <span className="text-[#0D6832] dark:text-[#34D399] mt-0.5">•</span>
                     <span>{detail}</span>
                   </div>
                 ))}
@@ -225,7 +224,7 @@ export function DocumentIntakeModal({
 
             <button
               onClick={handleDone}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
+              className="w-full py-3 rounded-xl bg-[#0D6832] hover:bg-[#094D25] text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer"
             >
               <span>View Updated Health Timeline</span>
               <ArrowRight className="w-4 h-4" />
@@ -242,10 +241,10 @@ export function DocumentIntakeModal({
               onClick={() => fileInputRef.current?.click()}
               className={`p-6 rounded-2xl border-2 border-dashed cursor-pointer text-center transition-all ${
                 isDragging
-                  ? "border-sky-500 bg-sky-50 dark:bg-sky-950/40 scale-[1.01]"
+                  ? "border-[#0D6832] bg-emerald-50 dark:bg-emerald-950/40 scale-[1.01]"
                   : selectedFile
-                  ? "border-sky-500/60 bg-sky-50/50 dark:bg-slate-900/90"
-                  : "border-slate-300 dark:border-slate-700 hover:border-sky-400 bg-slate-50/60 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-900"
+                  ? "border-[#0D6832]/60 bg-emerald-50/40 dark:bg-[#13241C]"
+                  : "border-[#CBD5C8] dark:border-[#274737] hover:border-[#0D6832] bg-[#FAFBF8] dark:bg-[#13241C]/50 hover:bg-[#F3F6F1] dark:hover:bg-[#13241C]"
               }`}
             >
               <input
@@ -257,16 +256,16 @@ export function DocumentIntakeModal({
               />
 
               {selectedFile ? (
-                <div className="flex items-center justify-between p-3.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-left shadow-xs">
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-white dark:bg-[#0E1B15] border border-[#E3E8DE] dark:border-[#1C3328] text-left shadow-xs">
                   <div className="flex items-center gap-3">
-                    <div className="p-2.5 rounded-lg bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400">
+                    <div className="p-2.5 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-[#0D6832] dark:text-[#34D399]">
                       <FileCheck2 className="w-6 h-6" />
                     </div>
                     <div>
-                      <span className="text-xs font-bold text-slate-900 dark:text-white block truncate max-w-xs">
+                      <span className="text-xs font-bold text-[#0A0F0D] dark:text-[#F4FBF7] block truncate max-w-xs">
                         {selectedFile.name}
                       </span>
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                      <span className="text-[11px] text-[#71717A] dark:text-[#8FA698]">
                         {Math.round(selectedFile.size / 1024 || 1)} KB • Ready to extract &amp; analyze
                       </span>
                     </div>
@@ -277,21 +276,21 @@ export function DocumentIntakeModal({
                       e.stopPropagation();
                       setSelectedFile(null);
                     }}
-                    className="p-2 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                    className="p-2 text-[#71717A] hover:text-rose-600 rounded-lg hover:bg-[#F3F6F1] dark:hover:bg-[#182C22] transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               ) : (
                 <div className="space-y-2 py-4">
-                  <div className="w-12 h-12 rounded-2xl bg-sky-100 dark:bg-sky-950/60 border border-sky-200 dark:border-sky-800 text-sky-600 dark:text-sky-400 mx-auto flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-[#0D6832] dark:text-[#34D399] mx-auto flex items-center justify-center">
                     <FileUp className="w-6 h-6" />
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-slate-800 dark:text-white block">
+                    <span className="text-xs font-bold text-[#0A0F0D] dark:text-white block">
                       Click to browse your computer or drag &amp; drop a PDF here
                     </span>
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">
+                    <span className="text-[11px] text-[#71717A] dark:text-[#8FA698] block mt-0.5">
                       Supports PDF, JPG/PNG scans, or clinical text summaries (up to 25 MB)
                     </span>
                   </div>
@@ -301,14 +300,14 @@ export function DocumentIntakeModal({
 
             {/* Quick Sample Test Buttons */}
             <div>
-              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider block mb-2">
-                Or test with sample patient records:
+              <span className="text-[11px] font-bold text-[#71717A] dark:text-[#8FA698] uppercase tracking-wider block mb-2 font-mono">
+                — OR TEST WITH SAMPLE PATIENT RECORDS:
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                 <button
                   type="button"
                   onClick={() => handleLoadSample("meloxicam")}
-                  className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-amber-400 bg-slate-50 dark:bg-slate-900 hover:bg-amber-50/50 dark:hover:bg-slate-800 text-left text-slate-800 dark:text-slate-200 transition-colors flex items-center gap-2.5 cursor-pointer"
+                  className="p-3 rounded-xl border border-[#E3E8DE] dark:border-[#1C3328] hover:border-amber-400 bg-[#F3F6F1] dark:bg-[#13241C] hover:bg-amber-50/50 dark:hover:bg-[#182C22] text-left text-[#0A0F0D] dark:text-[#F4FBF7] transition-colors flex items-center gap-2.5 cursor-pointer"
                 >
                   <FileText className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
                   <span className="truncate font-medium">QuickCare_Urgent_Care_Meloxicam.pdf</span>
@@ -316,9 +315,9 @@ export function DocumentIntakeModal({
                 <button
                   type="button"
                   onClick={() => handleLoadSample("quest")}
-                  className="p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-sky-400 bg-slate-50 dark:bg-slate-900 hover:bg-sky-50/50 dark:hover:bg-slate-800 text-left text-slate-800 dark:text-slate-200 transition-colors flex items-center gap-2.5 cursor-pointer"
+                  className="p-3 rounded-xl border border-[#E3E8DE] dark:border-[#1C3328] hover:border-emerald-500 bg-[#F3F6F1] dark:bg-[#13241C] hover:bg-emerald-50/50 dark:hover:bg-[#182C22] text-left text-[#0A0F0D] dark:text-[#F4FBF7] transition-colors flex items-center gap-2.5 cursor-pointer"
                 >
-                  <FileText className="w-4 h-4 text-sky-600 dark:text-sky-400 shrink-0" />
+                  <FileText className="w-4 h-4 text-[#0D6832] dark:text-[#34D399] shrink-0" />
                   <span className="truncate font-medium">Quest_Diagnostics_Renal_Panel.pdf</span>
                 </button>
               </div>
@@ -327,13 +326,13 @@ export function DocumentIntakeModal({
             {/* Document Details */}
             <div className="grid grid-cols-2 gap-3 pt-1">
               <div>
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="text-xs font-bold text-[#27272A] dark:text-[#D1E0D7] block mb-1">
                   Document Type
                 </label>
                 <select
                   value={docType}
                   onChange={(e: any) => setDocType(e.target.value)}
-                  className="w-full rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-sky-500"
+                  className="w-full rounded-xl bg-[#F3F6F1] dark:bg-[#13241C] border border-[#CBD5C8] dark:border-[#274737] p-2.5 text-xs text-[#0A0F0D] dark:text-[#F4FBF7] focus:outline-none focus:border-[#0D6832]"
                 >
                   <option value="medication">Urgent Care / Prescription Note</option>
                   <option value="lab">Lab Panel (Metabolic / Blood)</option>
@@ -342,14 +341,14 @@ export function DocumentIntakeModal({
               </div>
 
               <div>
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="text-xs font-bold text-[#27272A] dark:text-[#D1E0D7] block mb-1">
                   Clinic or Lab Name
                 </label>
                 <input
                   type="text"
                   value={facility}
                   onChange={(e) => setFacility(e.target.value)}
-                  className="w-full rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 p-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-sky-500"
+                  className="w-full rounded-xl bg-[#F3F6F1] dark:bg-[#13241C] border border-[#CBD5C8] dark:border-[#274737] p-2.5 text-xs text-[#0A0F0D] dark:text-[#F4FBF7] focus:outline-none focus:border-[#0D6832]"
                   placeholder="e.g. QuickCare Urgent Clinic"
                   required
                 />
@@ -361,7 +360,7 @@ export function DocumentIntakeModal({
               <button
                 type="submit"
                 disabled={!selectedFile || isProcessing}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-sm transition-all disabled:opacity-40 cursor-pointer"
+                className="w-full py-3.5 rounded-xl bg-[#0D6832] hover:bg-[#094D25] text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all disabled:opacity-40 cursor-pointer"
               >
                 {isProcessing ? (
                   <>
