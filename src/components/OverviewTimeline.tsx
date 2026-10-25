@@ -56,7 +56,7 @@ export function OverviewTimeline({
   return (
     <div className="space-y-6">
       {/* 1. Critical Care Safety Alert (GenAI Works High-Visibility Left Bar + Rose Tint) */}
-      <div className="rounded-2xl p-5 sm:p-6 border border-rose-200 dark:border-rose-900/60 border-l-4 border-l-rose-600 bg-gradient-to-r from-rose-50/90 via-white to-rose-50/50 dark:from-rose-950/40 dark:via-[#0E1B15] dark:to-rose-950/20 shadow-sm relative overflow-hidden transition-colors">
+      <div className="rounded-2xl p-5 sm:p-6 border border-rose-200 dark:border-rose-900/60 border-l-4 border-l-rose-600 bg-gradient-to-r from-rose-50/90 via-white to-rose-50/50 dark:from-rose-950/40 dark:via-[#0E1B15] dark:to-rose-950/20 shadow-sm relative overflow-hidden">
         <div className="flex items-start gap-4">
           <div className="p-3 rounded-2xl bg-rose-100 dark:bg-rose-900/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-700/60 shrink-0 shadow-sm">
             <AlertTriangle className="w-6 h-6" />
@@ -102,7 +102,7 @@ export function OverviewTimeline({
 
       {/* 2. Recently Uploaded Documents (if any) */}
       {uploadedDocuments.length > 0 && (
-        <div className="bg-white dark:bg-[#0E1B15] rounded-2xl p-5 border border-emerald-200 dark:border-emerald-800 shadow-sm space-y-3 transition-colors">
+        <div className="bg-white dark:bg-[#0E1B15] rounded-2xl p-5 border border-emerald-200 dark:border-emerald-800 shadow-sm space-y-3">
           <span className="text-[11px] font-bold text-[#0D6832] dark:text-[#34D399] uppercase tracking-widest flex items-center gap-1.5 font-mono">
             <FileCheck2 className="w-4 h-4 text-[#0D6832] dark:text-[#34D399]" />
             — NEWLY UPLOADED &amp; INGESTED RECORDS
@@ -134,7 +134,7 @@ export function OverviewTimeline({
       )}
 
       {/* 3. Caregiver Conversational Question Bar (GenAI Works Style Input & Evergreen Button) */}
-      <div className="bg-white dark:bg-[#0E1B15] rounded-2xl p-6 border border-[#E3E8DE] dark:border-[#1C3328] shadow-sm transition-colors">
+      <div className="bg-white dark:bg-[#0E1B15] rounded-2xl p-6 border border-[#E3E8DE] dark:border-[#1C3328] shadow-sm">
         <div className="max-w-3xl">
           <div className="flex items-center gap-2 text-[#0D6832] dark:text-[#34D399]">
             <Sparkles className="w-4 h-4" />
@@ -375,7 +375,7 @@ export function OverviewTimeline({
       </div>
 
       {/* 5. Recent Healthcare Encounters & Attached Records */}
-      <div className="bg-white dark:bg-[#0E1B15] rounded-2xl p-5 sm:p-6 border border-[#E3E8DE] dark:border-[#1C3328] shadow-sm transition-colors">
+      <div className="bg-white dark:bg-[#0E1B15] rounded-2xl p-5 sm:p-6 border border-[#E3E8DE] dark:border-[#1C3328] shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <h4 className="text-[11px] font-bold text-[#0D6832] dark:text-[#34D399] uppercase tracking-widest flex items-center gap-1.5 font-mono">
             <Calendar className="w-4 h-4 text-[#0D6832] dark:text-[#34D399]" />

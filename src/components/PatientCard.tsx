@@ -10,11 +10,11 @@ interface PatientCardProps {
 
 export function PatientCard({ patient }: PatientCardProps) {
   return (
-    <div className="bg-white dark:bg-[#0E1B15] rounded-2xl p-5 sm:p-6 mb-5 border border-[#E3E8DE] dark:border-[#1C3328] shadow-sm relative overflow-hidden transition-colors">
+    <div className="bg-white dark:bg-[#0E1B15] rounded-2xl p-5 sm:p-6 mb-5 border border-[#E3E8DE] dark:border-[#1C3328] shadow-sm relative overflow-hidden">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Patient Identity */}
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#0D6832] to-[#10B981] flex items-center justify-center text-white font-extrabold text-base shadow-sm ring-4 ring-emerald-50 dark:ring-emerald-950/40 shrink-0">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00D287] via-[#10B981] to-[#059669] flex items-center justify-center text-white font-extrabold text-base shadow-sm ring-4 ring-emerald-50 dark:ring-emerald-950/40 shrink-0">
             {patient.name.split(" ").map((n) => n[0]).join("")}
           </div>
           <div>

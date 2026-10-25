@@ -140,7 +140,7 @@ DISCLAIMER: CareSync is a family health coordination tool, not a medical diagnos
       </div>
 
       {/* Printable Clinical Brief Container (Clean, Hospital Paper Style) */}
-      <div className="bg-white dark:bg-[#0E1B15] rounded-2xl p-6 sm:p-8 border border-[#E3E8DE] dark:border-[#1C3328] shadow-sm relative transition-colors">
+      <div className="bg-white dark:bg-[#0E1B15] rounded-2xl p-6 sm:p-8 border border-[#E3E8DE] dark:border-[#1C3328] shadow-sm relative">
         {/* Document Header */}
         <div className="border-b border-[#E3E8DE] dark:border-[#1C3328] pb-5 mb-6">
           <div className="flex justify-between items-start flex-wrap gap-4">
