@@ -55,7 +55,7 @@ export default function CareSyncApp() {
           </p>
         </div>
 
-        {/* Action Buttons */}
+        {/* Hero Action Buttons (Clean & Visible) */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
           <button
             onClick={() => setIsIntakeOpen(true)}
@@ -68,11 +68,11 @@ export default function CareSyncApp() {
           {!currentPatient && (
             <button
               onClick={loadDemoPatient}
-              className="px-5 py-3.5 rounded-xl bg-white hover:bg-emerald-50/70 dark:bg-[#13241C] dark:hover:bg-[#182C22] border-2 border-emerald-300 dark:border-emerald-700/80 text-[#059669] dark:text-[#34D399] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs active:scale-95 transition-all cursor-pointer min-h-[48px]"
-              title="Load Eleanor Vance's sample chronic care records"
+              className="px-5 py-3.5 rounded-xl bg-white hover:bg-emerald-50/80 dark:bg-[#13241C] dark:hover:bg-[#182C22] border-2 border-emerald-300/90 dark:border-emerald-700/80 hover:border-[#00D287] dark:hover:border-[#00D287] text-[#0A0F0D] dark:text-[#F4FBF7] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs active:scale-95 transition-all cursor-pointer min-h-[48px]"
+              title="Explore CareSync with Eleanor Vance's sample clinical records"
             >
               <Sparkles className="w-4 h-4 text-[#00D287]" />
-              <span>Load Demo Case (Eleanor Vance)</span>
+              <span>Explore Sample Case (Eleanor Vance)</span>
             </button>
           )}
         </div>
@@ -183,32 +183,6 @@ export default function CareSyncApp() {
                 1-Click Printable Brief
               </div>
             </div>
-          </div>
-
-          {/* Interactive Demo Explorer Box */}
-          <div className="bg-white dark:bg-[#0E1B15] border-2 border-emerald-300 dark:border-emerald-700/80 rounded-2xl p-6 sm:p-7 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-5">
-            <div className="space-y-1.5 max-w-xl">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] sm:text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-[#059669] dark:text-emerald-300 font-mono tracking-wide uppercase">
-                  Sample Clinical Case
-                </span>
-                <span className="text-xs text-[#52525B] dark:text-[#A1A1AA]">• Test CareSync without real files</span>
-              </div>
-              <h2 className="text-base sm:text-lg font-extrabold text-[#0A0F0D] dark:text-[#F4FBF7] tracking-tight">
-                Explore Eleanor Vance&apos;s Sample Health Record
-              </h2>
-              <p className="text-xs sm:text-sm text-[#52525B] dark:text-[#CBD5E1] leading-relaxed">
-                See how CareSync caught a critical kidney contraindication when an urgent care clinic prescribed Meloxicam (NSAID) on top of her baseline Lisinopril, causing kidney filtration to plunge 22%.
-              </p>
-            </div>
-
-            <button
-              onClick={loadDemoPatient}
-              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#00D287] via-[#10B981] to-[#059669] hover:from-[#00b975] hover:to-[#047857] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-500/20 hover:shadow-lg active:scale-95 transition-all shrink-0 cursor-pointer min-h-[48px]"
-            >
-              <span>Load Eleanor Vance Demo</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
           </div>
         </div>
       )}

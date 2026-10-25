@@ -62,8 +62,8 @@ export function NavigationHeader() {
 
         {/* Right Side: Family Proxy Status & Instant Glitch-Free Theme Switcher */}
         <div className="flex items-center gap-2 sm:gap-3 text-xs">
-          {/* Active Patient Indicator or Demo Loader */}
-          {currentPatient ? (
+          {/* Active Patient Indicator (shown only when a record is active) */}
+          {currentPatient && (
             <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F3F6F1] dark:bg-[#13241C] border border-[#CBD5C8] dark:border-[#274737] text-[#27272A] dark:text-[#D1E0D7]">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
               <span className="text-[#52525B] dark:text-[#A1A1AA]">Active:</span>
@@ -79,14 +79,6 @@ export function NavigationHeader() {
                 ✕ Clear
               </button>
             </div>
-          ) : (
-            <button
-              onClick={loadDemoPatient}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-700/80 text-[#059669] dark:text-[#34D399] font-semibold text-xs cursor-pointer transition-colors shadow-xs"
-              title="Load Eleanor Vance's sample chronic care records"
-            >
-              <span>+ Load Demo (Eleanor Vance)</span>
-            </button>
           )}
 
           {/* Theme Toggle (Instant & Glitch-Free) */}
