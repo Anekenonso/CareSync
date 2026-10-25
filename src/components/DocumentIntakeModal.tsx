@@ -226,34 +226,41 @@ export function DocumentIntakeModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm transition-all duration-200 animate-in fade-in no-print">
-      <div className="bg-white dark:bg-[#0E1B15] border border-[#E3E8DE] dark:border-[#1C3328] rounded-2xl max-w-xl w-full p-4 sm:p-6 shadow-2xl relative max-h-[92vh] overflow-y-auto transition-all duration-200">
-        {/* Modal Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-[#71717A] hover:text-[#0A0F0D] dark:hover:text-white p-2 rounded-xl hover:bg-[#F3F6F1] dark:hover:bg-[#13241C] transition-colors cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
-          aria-label="Close modal"
-        >
-          <X className="w-5 h-5" />
-        </button>
+    <div className="fixed inset-0 z-[9999] overflow-y-auto bg-black/75 backdrop-blur-sm p-3 sm:p-6 flex min-h-screen items-center justify-center no-print">
+      {/* Background click overlay */}
+      <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
 
-        {/* Modal Header */}
-        <div className="mb-4 pr-8">
-          <div className="flex items-center gap-2 text-[#0D6832] dark:text-[#34D399]">
-            <Upload className="w-4 h-4" />
-            <span className="text-[10px] sm:text-[11px] font-bold tracking-widest uppercase font-mono">
-              — PLAIN-LANGUAGE DOCUMENT EXPLAINER
-            </span>
+      {/* Modal Dialog Card (Strictly centered, responsive, max-w-xl, contained) */}
+      <div className="relative w-full max-w-xl mx-auto my-auto bg-white dark:bg-[#0E1B15] border-2 border-[#CBD5C8] dark:border-[#274737] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[88vh] z-10 animate-in fade-in zoom-in-95 duration-150">
+        {/* Pinned Modal Header (Never hidden under header cards or offscreen) */}
+        <div className="shrink-0 p-4 sm:p-5 border-b border-[#E3E8DE] dark:border-[#1C3328] bg-white dark:bg-[#0E1B15] flex items-start justify-between gap-3">
+          <div className="pr-2">
+            <div className="flex items-center gap-2 text-[#059669] dark:text-[#34D399]">
+              <Upload className="w-4 h-4 shrink-0 text-[#00D287]" />
+              <span className="text-[10px] sm:text-[11px] font-bold tracking-widest uppercase font-mono">
+                — PLAIN-LANGUAGE DOCUMENT EXPLAINER
+              </span>
+            </div>
+            <h3 className="text-base sm:text-xl font-extrabold text-[#0A0F0D] dark:text-[#F4FBF7] tracking-tight mt-1">
+              {extractedResult ? "Medical Report Explained Simply" : "Upload Doctor Note or Lab Test"}
+            </h3>
+            <p className="text-xs text-[#71717A] dark:text-[#8FA698] mt-0.5">
+              {extractedResult
+                ? "We translated this report into everyday words so you know exactly what changed and what to ask."
+                : "Upload any medical paper. We explain what it means, what it does, and what changed."}
+            </p>
           </div>
-          <h3 className="text-base sm:text-xl font-extrabold text-[#0A0F0D] dark:text-[#F4FBF7] tracking-tight mt-1">
-            {extractedResult ? "Medical Report Explained Simply" : "Upload Doctor Note or Lab Test"}
-          </h3>
-          <p className="text-xs text-[#71717A] dark:text-[#8FA698] mt-0.5">
-            {extractedResult
-              ? "We translated this report into everyday words so you know exactly what changed and what to ask."
-              : "Upload any medical paper. We explain what it means, what it does, and what changed."}
-          </p>
+          <button
+            onClick={onClose}
+            className="text-[#71717A] hover:text-[#0A0F0D] dark:hover:text-white p-2 rounded-xl hover:bg-[#F3F6F1] dark:hover:bg-[#13241C] transition-colors cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center shrink-0 border border-transparent hover:border-[#CBD5C8] dark:hover:border-[#274737]"
+            aria-label="Close modal"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
+
+        {/* Modal Scrollable Body (Centered & responsive, no horizontal scroll or spanning) */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
 
         {extractedResult ? (
           /* Plain-Language Report Breakdown View */
@@ -335,7 +342,7 @@ export function DocumentIntakeModal({
             {/* Done button to return to timeline */}
             <button
               onClick={handleDone}
-              className="w-full py-3.5 rounded-xl bg-[#0D6832] hover:bg-[#094D25] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-all cursor-pointer min-h-[48px]"
+              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00D287] to-[#059669] hover:from-[#00b975] hover:to-[#047857] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-500/20 active:scale-98 transition-all cursor-pointer min-h-[48px]"
             >
               <span>See Eleanor&apos;s Updated Health Timeline</span>
               <ArrowRight className="w-4 h-4" />
@@ -479,7 +486,7 @@ export function DocumentIntakeModal({
               <button
                 type="submit"
                 disabled={!selectedFile || isProcessing}
-                className="w-full py-3.5 rounded-xl bg-[#0D6832] hover:bg-[#094D25] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-sm transition-all disabled:opacity-40 cursor-pointer min-h-[46px]"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00D287] to-[#059669] hover:from-[#00b975] hover:to-[#047857] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-500/20 transition-all disabled:opacity-40 cursor-pointer min-h-[46px]"
               >
                 {isProcessing ? (
                   <>
@@ -496,6 +503,7 @@ export function DocumentIntakeModal({
             </div>
           </form>
         )}
+        </div>
       </div>
     </div>
   );

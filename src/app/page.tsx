@@ -5,17 +5,10 @@ import {
   Clock,
   Stethoscope,
   PlusCircle,
-  Database,
-  ChevronDown,
-  ChevronUp,
-  ShieldCheck,
-  FileText,
 } from "lucide-react";
 import { PatientCard } from "@/components/PatientCard";
 import { OverviewTimeline } from "@/components/OverviewTimeline";
 import { PhysicianVisitPrepView } from "@/components/PhysicianVisitPrepView";
-import { ZetarisConsole } from "@/components/ZetarisConsole";
-import { MeterlessMemoryView } from "@/components/MeterlessMemoryView";
 import { DocumentIntakeModal } from "@/components/DocumentIntakeModal";
 import { patientEleanorVance } from "@/data/mockClinicalData";
 
@@ -23,7 +16,6 @@ export default function CareSyncApp() {
   const [activeTab, setActiveTab] = useState<"overview" | "visitPrep">("overview");
   const [isIntakeOpen, setIsIntakeOpen] = useState(false);
   const [uploadedDocs, setUploadedDocs] = useState<any[]>([]);
-  const [showTechnicalDetails, setShowTechnicalDetails] = useState(false);
 
   const handleDocumentAdded = (extractedInfo?: any) => {
     if (extractedInfo) {
@@ -51,10 +43,10 @@ export default function CareSyncApp() {
           </p>
         </div>
 
-        {/* Single Primary Call-to-Action (GenAI Works Signature Evergreen) */}
+        {/* Single Primary Call-to-Action (Bright Vibrant Medical Emerald) */}
         <button
           onClick={() => setIsIntakeOpen(true)}
-          className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#0D6832] hover:bg-[#094D25] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2.5 shrink-0 shadow-sm hover:shadow-md active:scale-95 transition-all self-stretch sm:self-auto cursor-pointer min-h-[48px]"
+          className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#00D287] via-[#10B981] to-[#059669] hover:from-[#00b975] hover:to-[#047857] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2.5 shrink-0 shadow-md shadow-emerald-500/20 hover:shadow-lg hover:shadow-emerald-500/30 active:scale-95 transition-all self-stretch sm:self-auto cursor-pointer min-h-[48px]"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Upload Doctor Note or Lab (PDF)</span>
@@ -108,67 +100,7 @@ export default function CareSyncApp() {
         {activeTab === "visitPrep" && <PhysicianVisitPrepView />}
       </div>
 
-      {/* 5. Bottom Technical Verification Drawer (Discreet & Collapsible) */}
-      <div className="pt-4 no-print">
-        <div className="bg-white dark:bg-[#0E1B15] rounded-2xl border border-[#E3E8DE] dark:border-[#1C3328] overflow-hidden shadow-sm transition-colors">
-          <button
-            onClick={() => setShowTechnicalDetails(!showTechnicalDetails)}
-            className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-[#F3F6F1]/60 dark:hover:bg-[#13241C]/60 transition-colors cursor-pointer"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 flex items-center justify-center text-[#0D6832] dark:text-[#34D399]">
-                <Database className="w-4 h-4" />
-              </div>
-              <div>
-                <h4 className="text-xs font-bold text-[#0A0F0D] dark:text-[#F4FBF7] uppercase tracking-wider">
-                  Technical Architecture &amp; Audit Proofs (Zetaris Spark SQL &amp; Meterless Trust Ledger)
-                </h4>
-                <p className="text-[11px] text-[#71717A] dark:text-[#8FA698]">
-                  Inspect the in-situ queries, 3-tier memory engine, and cryptographic audit logs powering CareSync.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-[#0D6832] dark:text-[#34D399] font-semibold">
-              <span>{showTechnicalDetails ? "Hide Proofs" : "Inspect Proofs"}</span>
-              {showTechnicalDetails ? (
-                <ChevronUp className="w-4 h-4" />
-              ) : (
-                <ChevronDown className="w-4 h-4" />
-              )}
-            </div>
-          </button>
-
-          {showTechnicalDetails && (
-            <div className="p-5 border-t border-[#E3E8DE] dark:border-[#1C3328] space-y-6 bg-[#FAFBF8] dark:bg-[#07100B]">
-              <div>
-                <div className="mb-2">
-                  <span className="text-xs font-bold text-[#0D6832] dark:text-[#34D399] uppercase tracking-wider">
-                    1. Zetaris In-Situ Spark SQL Data Fabric
-                  </span>
-                  <p className="text-xs text-[#71717A] dark:text-[#8FA698]">
-                    Queries federated outpatient EHR, Quest lab parquet files, and urgent care tables without centralizing raw PHI.
-                  </p>
-                </div>
-                <ZetarisConsole />
-              </div>
-
-              <div>
-                <div className="mb-2">
-                  <span className="text-xs font-bold text-[#0D6832] dark:text-[#34D399] uppercase tracking-wider">
-                    2. Meterless 3-Tier Long-Term Memory Engine
-                  </span>
-                  <p className="text-xs text-[#71717A] dark:text-[#8FA698]">
-                    Hot Session Working Memory, Semantic Cluster Vector Store, and Merkle Immutable Verification Ledger.
-                  </p>
-                </div>
-                <MeterlessMemoryView />
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* 6. Medical Document Intake Modal */}
+      {/* 5. Medical Document Intake Modal */}
       <DocumentIntakeModal
         isOpen={isIntakeOpen}
         onClose={() => setIsIntakeOpen(false)}
