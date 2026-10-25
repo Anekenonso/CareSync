@@ -1,0 +1,10 @@
+{
+  "run_id": "demo-003",
+  "input": {
+    "patient_id": "patient-ch-55912",
+    "query": "Analyze Clara's 90-day renal trajectory and verify whether high-dose Naproxen is safe with her current baseline kidney function."
+  },
+  "options": {
+    "sample_mode": true
+  }
+}

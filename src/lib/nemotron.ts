@@ -11,9 +11,12 @@ export interface NemotronResponse {
 }
 
 export async function runNemotronClinicalReasoning(customPrompt?: string): Promise<NemotronResponse> {
-  const apiKey = process.env.NVIDIA_API_KEY;
-  const model = process.env.NEMOTRON_MODEL || "nvidia/nemotron-3.5-lightning-30b-a3b";
-  const apiUrl = process.env.NEMOTRON_API_URL || "https://integrate.api.nvidia.com/v1/chat/completions";
+  const meterlessBase = process.env.METERLESS_BASE_URL || "http://127.0.0.1:8088/v1";
+  const meterlessToken = process.env.METERLESS_RUNTIME_TOKEN || process.env.NVIDIA_API_KEY;
+  const model = process.env.METERLESS_MODEL || process.env.NEMOTRON_MODEL || "nvidia/nemotron-3.5-lightning-30b-a3b";
+  const apiUrl = process.env.METERLESS_BASE_URL
+    ? `${meterlessBase.replace(/\/+$/, "")}/chat/completions`
+    : (process.env.NEMOTRON_API_URL || "http://127.0.0.1:8088/v1/chat/completions");
 
   const clinicalContext = {
     patient: {
@@ -27,7 +30,7 @@ export async function runNemotronClinicalReasoning(customPrompt?: string): Promi
     consultNotes: eleanorClinicalNotes,
   };
 
-  const systemPrompt = `You are CareSync's Senior Clinical AI Reasoning Agent powered by NVIDIA Nemotron.
+  const systemPrompt = `You are CareSync's Senior Clinical AI Reasoning Agent powered by NVIDIA Nemotron via Meterless Nightshift.
 You operate under strict non-diagnostic, evidence-backed clinical coordination guardrails.
 Analyze the provided longitudinal patient data across federated sources.
 
@@ -46,13 +49,15 @@ Respond in JSON format with:
 - "suggested_action_plan": array of strings
 - "discussion_questions": array of strings`;
 
-  if (apiKey && apiKey.startsWith("nvapi-")) {
+  if (meterlessToken) {
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${meterlessToken}`,
+          "meterless-app": "caresync-health",
+          "meterless-scope": "caregiver-clinical",
         },
         body: JSON.stringify({
           model,

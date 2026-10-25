@@ -140,31 +140,37 @@ Caregiver Request / Document Upload
 ## Explicit Sponsor Technology Integrations
 
 ### 1. Zetaris Networked Data Platform (In-Situ Data Virtualization)
-- **Role in CareSync:** Zetaris serves as the federated query engine virtualizing disparate medical data silos without centralizing sensitive PHI into a single proprietary database. It executes in-situ Spark SQL queries across:
+- **Role in CareSync:** Zetaris serves as the federated data layer, querying disparate medical silos in-place via its Spark SQL REST API without centralizing sensitive PHI. It virtualizes queries across:
   1. Outpatient PostgreSQL chronic records (Hope Valley EHR).
   2. Quest Diagnostics lab result tables.
-  3. Walk-in clinic discharge summaries (QuickCare Urgent Clinic).
-- **What Was Unique About Usage:** Instead of extracting, transforming, and centralizing private patient records (creating massive HIPAA compliance risks), CareSync uses Zetaris to query disparate silos in-place and join structured meds tables with unstructured document-extracted entities in a unified virtual view.
+  3. Walk-in clinic discharge summaries (Valley Urgent Care Clinic).
+- **Endpoint & Queries:** `POST /api/v1.0/query` executes virtualized SQL joins (e.g. `SELECT * FROM labs.longitudinal_results WHERE patient_id = ...`).
+- **Offline / Sample Mode Fallback:** When `SAMPLE_MODE=true` or when Zetaris is offline, the adapter falls back cleanly to the verified sample partition in `data/sample/`.
 - **Removal Test (Falsifiable Proof):** When Zetaris is removed or degraded, CareSync collapses into a basic single-PDF summarizer. It immediately loses the ability to cross-correlate outpatient chronic kidney disease with acute walk-in clinic prescriptions across network boundaries.
 
-### 2. Meterless World Model & H-MEM (Longitudinal Memory)
-- **Role in CareSync:** Implements a 3-tier hierarchical memory architecture:
-  - **Tier 1 (Long-Term Semantic Memory):** Persistent patient profile, baseline diagnoses (Type 2 Diabetes, HTN, CKD Stage 3a baseline at eGFR 54), and allergies (Sulfa).
-  - **Tier 2 (Short-Term Episodic Memory):** Discrete health encounters with timestamps (QuickCare knee pain visit on 2026-10-10; Quest lab drop on 2026-10-18).
+### 2. Meterless Nightshift (Primary AI Provider) & H-MEM Engine
+- **Primary AI Provider:** All model calls from the clinical agents run through **Meterless Nightshift** (`METERLESS_BASE_URL=http://127.0.0.1:8088/v1` or `host.docker.internal:8088/v1`) using OpenAI-compatible endpoints with `meterless-app: caresync-health` and `meterless-scope: caregiver-clinical` headers.
+- **Meterless H-MEM Engine:** Implements a 3-tier hierarchical memory architecture:
+  - **Tier 1 (Long-Term Semantic Memory):** Persistent patient profile, baseline diagnoses (Type 2 Diabetes, HTN, CKD Stage 3a baseline at eGFR 54), and chronic therapies (Lisinopril 20mg).
+  - **Tier 2 (Short-Term Episodic Memory):** Discrete health encounters with timestamps (Valley Urgent Care knee pain visit on 2026-10-10; Quest lab drop on 2026-10-21).
   - **Tier 3 (Working Memory):** Active caregiver consultation notes and doctor visit questions.
-- **What Was Unique About Usage:** Meterless maintains the living longitudinal patient state across sessions, executes real-time contraindication conflict detection (flagging Meloxicam + Lisinopril concurrent therapy in baseline CKD 3a), and logs every query and agent decision to an immutable **Trust Ledger**.
+- **Trust Ledger & Conflict Detection:** Automated conflict detection scans memory for adverse drug-condition interactions (flagging Meloxicam + Lisinopril in CKD 3a) and logs an append-only SHA-256 hash chain to the Trust Ledger.
+- **Engine Conformance Test:** Verified with passing test suite:
+  ```bash
+  python -m unittest tests/test_engine.py
+  ```
 - **Removal Test (Falsifiable Proof):** Without Meterless H-MEM, the agent suffers from session amnesia. When asked *"What changed in the last 90 days that the nephrologist should know?"*, the system cannot construct a chronological timeline, reducing its output to disjointed fragments.
 
-### 3. NVIDIA Nemotron 3.5 Lightning (Dual-Loop Reasoning)
-- **Role in CareSync:** Provides high-parameter clinical reasoning hosted via NVIDIA NIM endpoints (`api.nvcf.nvidia.com`).
-- **What Was Unique About Usage:** Nemotron is leveraged for **Dual-Output Synthesis**:
-  1. An auditable, transparent `<thought>` trace detailing its internal clinical hypothesis verification and risk ranking.
+### 3. NVIDIA Nemotron 3.5 Lightning (Dual-Loop Clinical Reasoning via Nightshift)
+- **Role in CareSync:** Provides high-parameter clinical reasoning hosted via NVIDIA endpoints and connected through Meterless Nightshift (`nvidia/nemotron-3.5-lightning-30b-a3b`).
+- **Dual-Output Synthesis:**
+  1. An auditable, transparent `<thought>` trace detailing internal clinical hypothesis verification and risk ranking.
   2. A plain-English, non-clinical caregiver briefing where every factual claim is tethered to a timestamped source document.
-- **Safety Gate Integration:** If a caregiver enters a diagnostic prompt (*"Does Mom have renal failure?"*), the agent loop intercepts the intent and redirects the caregiver to physician-guided questions.
+- **Safety Gate Integration:** If a caregiver enters a diagnostic prompt (*"Does Mom have renal failure?"*), the agent loop intercepts the intent and redirects the caregiver to physician-guided questions (verified in Test T03).
 
 ### 4. Cursor IDE (Agentic Development Workflow)
 - **Role in CareSync:** Cursor served as the primary development environment throughout the hackathon lifecycle.
-- **How It Was Used:** Cursor Composer, `.cursorrules`, and agentic pair-programming workflows were used to scaffold Next.js 14 App Router routes, implement strict TypeScript typing across all health schemas, refactor design systems, and run rapid TDD loops for the T01–T10 test suite.
+- **How It Was Used:** Cursor Composer, `.cursorrules`, and agentic pair-programming workflows were used to scaffold the multi-agent orchestration loop, write Zetaris and Nightshift adapters, implement strict type contracts, and run rapid TDD loops for the test suite.
 
 ---
 
@@ -312,42 +318,99 @@ Step 6: Formulating non-diagnostic encounter brief highlighting medication timel
 
 ## Local Setup & Environment Configuration
 
-### Prerequisites
-- Node.js 18.17+ or 20.x
-- npm 9+ (on Windows, use `npm.cmd` or `npx.cmd`)
-- Git
+### Quick Judge Verification (Option A: Python CLI & API on Port 8000)
 
-### Installation
 ```bash
+# 1. Clone repository
 git clone https://github.com/Anekenonso/CareSync.git
 cd CareSync
-npm.cmd install
+
+# 2. Configure environment (placeholders only)
+cp .env.example .env
+
+# 3. Create virtual environment & install dependencies
+python -m venv .venv
+# Linux/macOS:
+source .venv/bin/activate
+# Windows PowerShell:
+.\.venv\Scripts\Activate.ps1
+
+pip install -r requirements.txt
+
+# 4. Start Programmatic Agent Server (binds 0.0.0.0:8000)
+python run.py
 ```
 
-### Environment Variables
-Create a `.env.local` file in the project root:
-
-| Variable | Description | Required? | Default / Example |
-| :--- | :--- | :---: | :--- |
-| `NVIDIA_API_KEY` | NVIDIA NIM API key for Nemotron 3.5 Lightning | Yes (for live AI) | `nvapi-...` |
-| `NVIDIA_MODEL` | NIM model identifier | Recommended | `nvidia/nemotron-3.5-lightning-30b-a3b` |
-| `ZETARIS_API_URL` | Zetaris Spark SQL endpoint | Optional | `https://your-zetaris-host:8888` |
-| `ZETARIS_API_TOKEN` | Zetaris authentication token | Optional | `your-token` |
-| `ZETARIS_SIMULATION_MODE` | Force Zetaris simulated data mode | Recommended | `true` |
-| `DEMO_MODE` | Forces `[SIMULATED]` badges on all records | Recommended | `true` |
-| `NEXT_PUBLIC_APP_NAME` | Application display title | Optional | `"CareSync"` |
-
-### Running the Application
+In another terminal, test the programmatic entry point:
 ```bash
-npm.cmd run dev
+curl -X POST http://localhost:8000/run \
+  -H "Content-Type: application/json" \
+  -d @input_examples/example_1.json
+```
+
+Or run directly on an input file via CLI:
+```bash
+python run.py --input input_examples/example_1.json
+python run.py --input input_examples/example_2.json
+python run.py --input input_examples/example_3.json
+```
+
+---
+
+### Quick Judge Verification (Option B: Docker on Port 8000)
+
+```bash
+# 1. Build container at build time (no runtime installs, no local GPU needed)
+docker build -t oah-submission .
+
+# 2. Run container (connects to local Zetaris & Nightshift via host.docker.internal)
+docker run --rm -p 8000:8000 --env-file .env oah-submission
+
+# 3. Call endpoint
+curl -X POST http://localhost:8000/run \
+  -H "Content-Type: application/json" \
+  -d @input_examples/example_1.json
+```
+
+---
+
+### Conformance Test Suite & Engine Tests
+
+Run the full automated test suite verifying the 5-agent loop, safety guardrail, and Meterless H-MEM engine:
+
+```bash
+# Run all agent and engine tests (passes 100% in <1s)
+python -m unittest discover tests
+
+# Run Meterless H-MEM engine conformance test specifically
+python -m unittest tests/test_engine.py
+```
+
+---
+
+### Offline / Sample Mode Test (Section 10 Pre-Submission Self-Check)
+
+To test like a judge without live Zetaris, Nightshift, or network access:
+```bash
+SAMPLE_MODE=true python run.py --input input_examples/example_1.json
+```
+The agent executes real multi-agent planning, retrieval, metric trend calculation, contraindication detection, and synthesis over verified offline sample records.
+
+---
+
+### Caregiver Web Interface (Port 3000)
+
+If you wish to explore the Caregiver Web Interface on a separate port:
+```bash
+npm install
+npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your web browser.
 
-### Verifying Types & Production Build
-```bash
-npx.cmd tsc --noEmit
-npm.cmd run build
-```
+---
+
+## Pre-Existing Components Declaration
+**None.** All core agent logic, Zetaris query federation adapters, Meterless Nightshift integration, H-MEM memory models, and caregiver UI components were designed and developed entirely within the Open Agent Hackathon 2026 build window.
 
 ---
 

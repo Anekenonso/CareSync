@@ -1,0 +1,55 @@
+{
+  "project_name": "CareSync",
+  "tagline": "Family Health Evidence & Coordination Agent",
+  "track": "The Agent That Can Explain Why",
+  "secondary_track": "Reasoning Architecture",
+  "repository": "https://github.com/Anekenonso/CareSync",
+  "sponsor_technology": {
+    "zetaris": {
+      "role": "Data Layer",
+      "description": "Zetaris serves as the federated data layer, querying disparate outpatient EHR records, diagnostic labs, and urgent care encounters in-situ via Spark SQL REST API without centralizing sensitive PHI.",
+      "adapter": "app/adapters/zetaris.py",
+      "queries": [
+        "SELECT * FROM ehr.patient_demographics WHERE patient_id = :id",
+        "SELECT * FROM labs.metabolic_panel WHERE patient_id = :id ORDER BY test_date DESC",
+        "SELECT * FROM pharmacy.active_medications WHERE patient_id = :id",
+        "SELECT * FROM urgent_care.clinical_encounters WHERE patient_id = :id"
+      ]
+    },
+    "meterless": {
+      "primary_ai_provider": "Meterless Nightshift",
+      "nightshift_adapter": "app/adapters/meterless.py",
+      "nightshift_url": "http://127.0.0.1:8088/v1",
+      "engines_used": [
+        {
+          "engine": "H-MEM",
+          "feature": "Longitudinal Patient World-Model & Trust Ledger",
+          "description": "Maintains 3-tier hierarchical memory (Long-Term Semantic, Short-Term Episodic, and Working Memory) across patient encounters, executes automated conflict detection (NSAID + ACE-inhibitor contraindication), and logs immutable audit trails to the Trust Ledger.",
+          "conformance_test": "tests/test_engine.py"
+        }
+      ]
+    },
+    "nvidia": {
+      "role": "Clinical Reasoning Engine",
+      "description": "NVIDIA Nemotron 3.5 Lightning (hosted endpoints connected through Meterless Nightshift) powers the multi-step clinical hypothesis verification, metric delta calculations, and structured caregiver visit-prep briefing.",
+      "models": [
+        "nvidia/nemotron-3.5-lightning-30b-a3b",
+        "nvidia/nemotron-3-super-120b-a12b"
+      ]
+    },
+    "cursor": {
+      "role": "Development Tool",
+      "description": "Scaffolded repository architecture, generated type contracts, implemented multi-agent state machines, and developed test suites."
+    }
+  },
+  "entry_points": {
+    "programmatic": "python run.py",
+    "http_endpoint": "POST http://localhost:8000/run",
+    "web_ui": "http://localhost:3000"
+  },
+  "sample_mode": {
+    "supported": true,
+    "env_flag": "SAMPLE_MODE=true",
+    "description": "Runs full multi-agent logic on curated clinical datasets with zero external credentials or network dependencies."
+  }
+}

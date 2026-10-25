@@ -1,0 +1,10 @@
+{
+  "run_id": "demo-002",
+  "input": {
+    "patient_id": "patient-mt-38102",
+    "query": "Evaluate bleeding risks and drug-drug interactions between Marcus's chronic Warfarin therapy and the recently added antiarrhythmic medication."
+  },
+  "options": {
+    "sample_mode": true
+  }
+}

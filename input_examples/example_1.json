@@ -1,0 +1,10 @@
+{
+  "run_id": "demo-001",
+  "input": {
+    "patient_id": "patient-ev-49201",
+    "query": "Reconcile Eleanor's medication records across primary care and urgent care, and explain the acute October eGFR drop from 54 to 42 mL/min."
+  },
+  "options": {
+    "sample_mode": true
+  }
+}
