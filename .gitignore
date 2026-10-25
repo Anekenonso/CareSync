@@ -54,3 +54,6 @@ Thumbs.db
 # Documentation & Planning PDFs
 *.pdf
 
+# Local agent tools & skills
+.claude/
+

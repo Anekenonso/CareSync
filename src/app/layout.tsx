@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import "./globals.css";
 import { ShieldAlert } from "lucide-react";
 import { NavigationHeader } from "@/components/NavigationHeader";
@@ -99,13 +100,13 @@ export default function RootLayout({
                 <span className="text-[#CBD3C6] dark:text-[#313131]">•</span>
                 <span>HIPAA-safe data processing</span>
                 <span className="text-[#CBD3C6] dark:text-[#313131]">•</span>
-                <a href="#clinical-disclaimer" className="hover:text-[#0E6238] dark:hover:text-[#199A59] transition-colors underline-offset-2 hover:underline">
+                <Link href="/clinical-safety" className="hover:text-[#0E6238] dark:hover:text-[#199A59] transition-colors underline-offset-2 hover:underline">
                   Clinical safety policy
-                </a>
+                </Link>
                 <span className="text-[#CBD3C6] dark:text-[#313131]">•</span>
-                <a href="#terms-modal" className="hover:text-[#0E6238] dark:hover:text-[#199A59] transition-colors underline-offset-2 hover:underline">
+                <Link href="/privacy-terms" className="hover:text-[#0E6238] dark:hover:text-[#199A59] transition-colors underline-offset-2 hover:underline">
                   Privacy and terms
-                </a>
+                </Link>
               </div>
             </div>
           </footer>
