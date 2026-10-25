@@ -58,6 +58,13 @@ Thumbs.db
 # Local agent tools & skills
 .claude/
 
-# Pitch & presentation materials
+# Pitch, video toolkit & presentation materials (NEVER COMMIT MARKETING/PROMOTION)
 docs/SLIDE_DECK.md
+claude-code-video-toolkit/
+videos/
+video/
+*.mp4
+*.webm
+*.mov
+
 
