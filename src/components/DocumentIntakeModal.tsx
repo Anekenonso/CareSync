@@ -31,6 +31,7 @@ export function DocumentIntakeModal({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [facility, setFacility] = useState("QuickCare Urgent Clinic");
   const [docType, setDocType] = useState<"medication" | "lab" | "consult">("medication");
+  const [userSelectedDocType, setUserSelectedDocType] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [extractionStep, setExtractionStep] = useState("");
@@ -76,7 +77,9 @@ export function DocumentIntakeModal({
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       setSelectedFile(file);
-      guessMetadataFromFileName(file.name);
+      if (!userSelectedDocType) {
+        guessMetadataFromFileName(file.name);
+      }
     }
   };
 
@@ -84,7 +87,9 @@ export function DocumentIntakeModal({
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setSelectedFile(file);
-      guessMetadataFromFileName(file.name);
+      if (!userSelectedDocType) {
+        guessMetadataFromFileName(file.name);
+      }
     }
   };
 
@@ -102,7 +107,7 @@ export function DocumentIntakeModal({
     }
   };
 
-  const handleLoadSample = async (sampleType: "meloxicam" | "quest") => {
+  const handleLoadSample = (sampleType: "meloxicam" | "quest") => {
     if (sampleType === "meloxicam") {
       const mockFile = new File(
         [
@@ -114,7 +119,6 @@ export function DocumentIntakeModal({
       setSelectedFile(mockFile);
       setDocType("medication");
       setFacility("QuickCare Urgent Clinic");
-      await executeExtraction(mockFile, "QuickCare Urgent Clinic", "medication");
     } else {
       const mockFile = new File(
         [
@@ -126,7 +130,6 @@ export function DocumentIntakeModal({
       setSelectedFile(mockFile);
       setDocType("lab");
       setFacility("Quest Diagnostics Outpatient Lab");
-      await executeExtraction(mockFile, "Quest Diagnostics Outpatient Lab", "lab");
     }
   };
 
@@ -158,14 +161,13 @@ export function DocumentIntakeModal({
       }
 
       if (!data || !data.extractedFacts) {
-        const isQuest = fileToProcess.name.toLowerCase().includes("quest") || typeName === "lab";
-        if (isQuest) {
+        if (typeName === "lab") {
           data = {
             fileName: fileToProcess.name,
             facility: facilityName,
             extractedFacts: {
               type: "lab_panel",
-              title: "Quest Diagnostics: Kidney and metabolic panel",
+              title: `${facilityName}: Kidney & Metabolic Panel`,
               details: [
                 "Kidney filtration (eGFR): 42 mL/min (dropped from baseline 54)",
                 "Serum creatinine: 1.82 mg/dL (spiked from baseline 1.28)",
@@ -182,13 +184,13 @@ export function DocumentIntakeModal({
                 "Filtration rate dropped 22% (eGFR 42 mL/min). Correlates with starting Meloxicam alongside chronic Lisinopril.",
             },
           };
-        } else {
+        } else if (typeName === "medication") {
           data = {
             fileName: fileToProcess.name,
             facility: facilityName,
             extractedFacts: {
               type: "medication_addition",
-              title: "QuickCare Urgent Clinic: Knee pain prescription",
+              title: `${facilityName}: Knee Pain Prescription`,
               details: [
                 "New medicine: Meloxicam 15mg oral tablet once daily",
                 "Prescribed for: Acute right knee joint pain and swelling",
@@ -203,6 +205,27 @@ export function DocumentIntakeModal({
               },
               safetyAlert:
                 "Medication clash: Meloxicam + Lisinopril severely restricts kidney perfusion in baseline chronic kidney disease.",
+            },
+          };
+        } else {
+          data = {
+            fileName: fileToProcess.name,
+            facility: facilityName,
+            extractedFacts: {
+              type: "consult_summary",
+              title: `${facilityName}: Primary Care Clinical Progress Note`,
+              details: [
+                "Encounter: Routine longitudinal CKD & hypertension evaluation",
+                "Clinical Assessment: Stable Stage 3a Chronic Kidney Disease on Lisinopril 20mg",
+                "Vitals Recorded: Blood pressure 138/84 mmHg, Heart rate 72 bpm, Weight stable at 148 lbs",
+                "Physician Guidance: Scheduled routine renal panel; strict guidance to avoid nephrotoxic NSAIDs",
+              ],
+              plainEnglish: {
+                whatIsThis: "A comprehensive outpatient clinical summary from Eleanor's primary care physician.",
+                whatItDoes: "Documents her chronic baseline health status, reviews blood pressure control, and coordinates ongoing care.",
+                whatChanged: "Establishes her stable kidney baseline (eGFR 54 mL/min) prior to recent outside walk-in visits.",
+                actionForDoctor: "Ask Dr. Chen: 'Can we review this baseline note against Eleanor's latest lab values to verify if recent outside prescriptions caused her kidney drop?'",
+              },
             },
           };
         }
@@ -236,6 +259,7 @@ export function DocumentIntakeModal({
 
   const handleDone = () => {
     setSelectedFile(null);
+    setUserSelectedDocType(false);
     setExtractedResult(null);
     onClose();
   };
@@ -386,7 +410,11 @@ export function DocumentIntakeModal({
                     type="button"
                     disabled={isProcessing}
                     onClick={() => handleLoadSample("quest")}
-                    className="p-3 rounded-xl border border-[#CBD3C6] dark:border-[#272727] hover:border-[#0E6238] dark:hover:border-[#199A59] bg-white dark:bg-[#181818] text-left text-[#0A0F0D] dark:text-[#FFFFFF] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] flex items-center gap-2.5 cursor-pointer shadow-xs active:scale-[0.98] min-h-[44px]"
+                    className={`p-3 rounded-xl border text-left transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] flex items-center gap-2.5 cursor-pointer shadow-xs active:scale-[0.98] min-h-[44px] ${
+                      selectedFile?.name.includes("Quest")
+                        ? "border-[#0E6238] dark:border-[#199A59] bg-[#EBF7F0]/60 dark:bg-[#1F1F1F] ring-1 ring-[#0E6238]"
+                        : "border-[#CBD3C6] dark:border-[#272727] hover:border-[#0E6238] dark:hover:border-[#199A59] bg-white dark:bg-[#181818] text-[#0A0F0D] dark:text-[#FFFFFF]"
+                    }`}
                   >
                     <FileText className="w-4 h-4 text-[#0E6238] dark:text-[#199A59] shrink-0" />
                     <div className="truncate">
@@ -398,7 +426,11 @@ export function DocumentIntakeModal({
                     type="button"
                     disabled={isProcessing}
                     onClick={() => handleLoadSample("meloxicam")}
-                    className="p-3 rounded-xl border border-[#CBD3C6] dark:border-[#272727] hover:border-[#D97706] dark:hover:border-[#FBBF24] bg-white dark:bg-[#181818] text-left text-[#0A0F0D] dark:text-[#FFFFFF] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] flex items-center gap-2.5 cursor-pointer shadow-xs active:scale-[0.98] min-h-[44px]"
+                    className={`p-3 rounded-xl border text-left transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] flex items-center gap-2.5 cursor-pointer shadow-xs active:scale-[0.98] min-h-[44px] ${
+                      selectedFile?.name.includes("Meloxicam")
+                        ? "border-[#D97706] dark:border-[#FBBF24] bg-[#FFFBEB] dark:bg-[#1F1F1F] ring-1 ring-[#D97706]"
+                        : "border-[#CBD3C6] dark:border-[#272727] hover:border-[#D97706] dark:hover:border-[#FBBF24] bg-white dark:bg-[#181818] text-[#0A0F0D] dark:text-[#FFFFFF]"
+                    }`}
                   >
                     <FileText className="w-4 h-4 text-[#D97706] dark:text-[#FBBF24] shrink-0" />
                     <div className="truncate">
@@ -478,13 +510,22 @@ export function DocumentIntakeModal({
               {/* Document Details */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <div>
-                  <label className="text-xs font-semibold text-[#27272A] dark:text-[#E5E7EB] block mb-1">
-                    Document type
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label htmlFor="doc-type-select" className="text-xs font-semibold text-[#27272A] dark:text-[#E5E7EB]">
+                      Document type
+                    </label>
+                    <span className="text-[11px] text-[#0E6238] dark:text-[#199A59] font-medium">
+                      Select to categorize
+                    </span>
+                  </div>
                   <select
+                    id="doc-type-select"
                     value={docType}
-                    onChange={(e: any) => setDocType(e.target.value)}
-                    className="w-full rounded-xl bg-[#F4F6F2] dark:bg-[#1F1F1F] border border-[#CBD3C6] dark:border-[#272727] p-2.5 text-xs text-[#0A0F0D] dark:text-[#FFFFFF] focus-ring min-h-[42px]"
+                    onChange={(e: any) => {
+                      setDocType(e.target.value);
+                      setUserSelectedDocType(true);
+                    }}
+                    className="w-full rounded-xl bg-[#F4F6F2] dark:bg-[#1F1F1F] border border-[#CBD3C6] dark:border-[#272727] p-2.5 text-xs text-[#0A0F0D] dark:text-[#FFFFFF] focus-ring min-h-[42px] cursor-pointer"
                   >
                     <option value="lab">Lab blood / urine test (Quest / Labcorp)</option>
                     <option value="medication">Urgent care / prescription note</option>
