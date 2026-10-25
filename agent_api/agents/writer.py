@@ -4,7 +4,7 @@ into a caregiver-facing physician visit preparation brief.
 Executes model calls through Meterless Nightshift (NVIDIA Nemotron).
 """
 from typing import Dict, Any, List
-from app.adapters.meterless import meterless_client
+from agent_api.adapters.meterless import meterless_client
 
 class VisitPrepWriterAgent:
     def __init__(self, name: str = "VisitPrepWriterAgent"):

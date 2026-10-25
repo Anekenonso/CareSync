@@ -6,7 +6,7 @@ import time
 import json
 import requests
 from typing import Dict, Any, List, Optional
-from app.config import cfg
+from agent_api.config import cfg
 
 class MeterlessNightshiftClient:
     def __init__(self, base_url: Optional[str] = None, token: Optional[str] = None, model: Optional[str] = None):

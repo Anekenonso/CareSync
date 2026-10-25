@@ -8,7 +8,7 @@
     "zetaris": {
       "role": "Data Layer",
       "description": "Zetaris serves as the federated data layer, querying disparate outpatient EHR records, diagnostic labs, and urgent care encounters in-situ via Spark SQL REST API without centralizing sensitive PHI.",
-      "adapter": "app/adapters/zetaris.py",
+      "adapter": "agent_api/adapters/zetaris.py",
       "queries": [
         "SELECT * FROM ehr.patient_demographics WHERE patient_id = :id",
         "SELECT * FROM labs.metabolic_panel WHERE patient_id = :id ORDER BY test_date DESC",
@@ -18,7 +18,7 @@
     },
     "meterless": {
       "primary_ai_provider": "Meterless Nightshift",
-      "nightshift_adapter": "app/adapters/meterless.py",
+      "nightshift_adapter": "agent_api/adapters/meterless.py",
       "nightshift_url": "http://127.0.0.1:8088/v1",
       "engines_used": [
         {

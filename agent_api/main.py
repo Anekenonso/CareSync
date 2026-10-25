@@ -10,8 +10,8 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from app.config import cfg
-from app.agents.orchestrator import run_agent_workflow
+from agent_api.config import cfg
+from agent_api.agents.orchestrator import run_agent_workflow
 
 app = FastAPI(
     title="CareSync - Clinical Coordination Agent",

@@ -6,7 +6,7 @@ Run with:
 """
 import unittest
 import os
-from app.agents.orchestrator import run_agent_workflow
+from agent_api.agents.orchestrator import run_agent_workflow
 
 class TestCareSyncAgents(unittest.TestCase):
     def test_multi_agent_execution_loop(self):

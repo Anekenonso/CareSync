@@ -4,7 +4,7 @@ drug-drug interactions, and clinical safety risks.
 Enforces that every alert has verified evidence anchors.
 """
 from typing import Dict, Any, List
-from app.engines.hmem import HMEMEngine
+from agent_api.engines.hmem import HMEMEngine
 
 class ConflictCriticAgent:
     def __init__(self, name: str = "ConflictCriticAgent"):

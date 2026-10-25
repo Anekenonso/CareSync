@@ -12,8 +12,8 @@ import json
 import argparse
 from typing import Dict, Any
 
-from app.config import cfg
-from app.agents.orchestrator import run_agent_workflow
+from agent_api.config import cfg
+from agent_api.agents.orchestrator import run_agent_workflow
 
 def run_single_input(file_path: str, output_path: str = None) -> int:
     """Execute the agent workflow on a single input file."""
@@ -60,7 +60,7 @@ def start_server(port: int = 8000, host: str = "0.0.0.0"):
     # Try starting FastAPI via uvicorn
     try:
         import uvicorn
-        uvicorn.run("app.main:app", host=host, port=port, log_level="info")
+        uvicorn.run("agent_api.main:app", host=host, port=port, log_level="info")
         return
     except ImportError:
         print("[WARN] uvicorn not installed. Falling back to Python standard library HTTP server...", flush=True)

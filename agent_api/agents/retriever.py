@@ -3,7 +3,7 @@ Queries federated hospital EHR, Quest Labs, and Walk-in Urgent Care silos via Ze
 Supports query narrowing, retries, and offline sample partition fallback.
 """
 from typing import Dict, Any
-from app.adapters.zetaris import zetaris_client
+from agent_api.adapters.zetaris import zetaris_client
 
 class DataRetrieverAgent:
     def __init__(self, name: str = "DataRetrieverAgent"):

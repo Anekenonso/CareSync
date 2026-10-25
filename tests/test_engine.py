@@ -4,7 +4,7 @@ Run with:
   python -m unittest tests/test_engine.py
 """
 import unittest
-from app.engines.hmem import HMEMEngine
+from agent_api.engines.hmem import HMEMEngine
 
 class TestHMEMEngine(unittest.TestCase):
     def setUp(self):

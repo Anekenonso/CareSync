@@ -5,8 +5,8 @@ Implements timeouts, retries, and offline SAMPLE_MODE fallback as required by ha
 import time
 import requests
 from typing import Dict, Any, List, Optional
-from app.config import cfg
-from app.adapters.sample_data import get_sample_patient
+from agent_api.config import cfg
+from agent_api.adapters.sample_data import get_sample_patient
 
 class ZetarisAdapter:
     def __init__(self, rest_url: Optional[str] = None, api_key: Optional[str] = None, org_id: Optional[str] = None):
