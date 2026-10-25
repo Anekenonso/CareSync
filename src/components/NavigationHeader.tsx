@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { HeartPulse, Sun, Moon, UserCheck } from "lucide-react";
+import { useCaregiver } from "@/context/CaregiverContext";
 
 export function NavigationHeader() {
   const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const { currentPatient, loadDemoPatient, clearPatient } = useCaregiver();
 
   useEffect(() => {
     setMounted(true);
@@ -60,15 +62,32 @@ export function NavigationHeader() {
 
         {/* Right Side: Family Proxy Status & Instant Glitch-Free Theme Switcher */}
         <div className="flex items-center gap-2 sm:gap-3 text-xs">
-          {/* Family Proxy Indicator (Hidden on small mobile to prevent cramped headers) */}
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F3F6F1] dark:bg-[#13241C] border border-[#CBD5C8] dark:border-[#274737] text-[#27272A] dark:text-[#D1E0D7]">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-            <span className="text-[#52525B] dark:text-[#A1A1AA]">Mom&apos;s Record:</span>
-            <strong className="text-[#0A0F0D] dark:text-[#F4FBF7] font-semibold flex items-center gap-1">
-              <UserCheck className="w-3.5 h-3.5 text-[#059669] dark:text-[#34D399]" />
-              Eleanor Vance
-            </strong>
-          </div>
+          {/* Active Patient Indicator or Demo Loader */}
+          {currentPatient ? (
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#F3F6F1] dark:bg-[#13241C] border border-[#CBD5C8] dark:border-[#274737] text-[#27272A] dark:text-[#D1E0D7]">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+              <span className="text-[#52525B] dark:text-[#A1A1AA]">Active:</span>
+              <strong className="text-[#0A0F0D] dark:text-[#F4FBF7] font-semibold flex items-center gap-1">
+                <UserCheck className="w-3.5 h-3.5 text-[#059669] dark:text-[#34D399]" />
+                {currentPatient.name}
+              </strong>
+              <button
+                onClick={clearPatient}
+                className="ml-1 text-[10px] text-[#71717A] hover:text-rose-600 dark:hover:text-rose-400 font-bold px-1.5 py-0.5 rounded hover:bg-rose-50 dark:hover:bg-rose-950/40 cursor-pointer"
+                title="Clear patient record"
+              >
+                ✕ Clear
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={loadDemoPatient}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-700/80 text-[#059669] dark:text-[#34D399] font-semibold text-xs cursor-pointer transition-colors shadow-xs"
+              title="Load Eleanor Vance's sample chronic care records"
+            >
+              <span>+ Load Demo (Eleanor Vance)</span>
+            </button>
+          )}
 
           {/* Theme Toggle (Instant & Glitch-Free) */}
           <button

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ShieldAlert } from "lucide-react";
 import { NavigationHeader } from "@/components/NavigationHeader";
+import { CaregiverProvider } from "@/context/CaregiverContext";
 
 export const metadata: Metadata = {
   title: "CareSync | Family Health Evidence & Coordination",
@@ -67,30 +68,32 @@ export default function RootLayout({
           </div>
         </div>
 
-        {/* Global Navigation Header with Clinical Theme Switcher */}
-        <NavigationHeader />
+        <CaregiverProvider>
+          {/* Global Navigation Header with Clinical Theme Switcher */}
+          <NavigationHeader />
 
-        {/* Main Application Area (Responsive Mobile Padding) */}
-        <main className="flex-1 max-w-6xl w-full mx-auto px-3.5 sm:px-6 py-4 sm:py-6 relative z-10">
-          {children}
-        </main>
+          {/* Main Application Area (Responsive Mobile Padding) */}
+          <main className="flex-1 max-w-6xl w-full mx-auto px-3.5 sm:px-6 py-4 sm:py-6 relative z-10">
+            {children}
+          </main>
 
-        {/* Clean, Bold & Visible Caregiver Footer */}
-        <footer className="mt-8 border-t border-[#CBD5C8] dark:border-[#274737] bg-white dark:bg-[#0E1B15] py-5 text-xs sm:text-sm text-[#27272A] dark:text-[#E2E8F0] no-print relative z-10 shadow-xs">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left font-semibold">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#00D287] inline-block shrink-0 shadow-xs"></span>
-              <p className="text-[#0A0F0D] dark:text-[#F4FBF7]">
-                © {new Date().getFullYear()} <strong className="font-extrabold text-[#059669] dark:text-[#34D399]">CareSync</strong>. Dedicated to family caregivers and patient health safety.
-              </p>
+          {/* Clean, Bold & Visible Caregiver Footer */}
+          <footer className="mt-8 border-t border-[#CBD5C8] dark:border-[#274737] bg-white dark:bg-[#0E1B15] py-5 text-xs sm:text-sm text-[#27272A] dark:text-[#E2E8F0] no-print relative z-10 shadow-xs">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left font-semibold">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#00D287] inline-block shrink-0 shadow-xs"></span>
+                <p className="text-[#0A0F0D] dark:text-[#F4FBF7]">
+                  © {new Date().getFullYear()} <strong className="font-extrabold text-[#059669] dark:text-[#34D399]">CareSync</strong>. Dedicated to family caregivers and patient health safety.
+                </p>
+              </div>
+              <div className="flex items-center gap-3 text-[#52525B] dark:text-[#94A3B8]">
+                <span>All source records verified</span>
+                <span>•</span>
+                <span>HIPAA-Safe Data Processing</span>
+              </div>
             </div>
-            <div className="flex items-center gap-3 text-[#52525B] dark:text-[#94A3B8]">
-              <span>All source records verified</span>
-              <span>•</span>
-              <span>HIPAA-Safe Data Processing</span>
-            </div>
-          </div>
-        </footer>
+          </footer>
+        </CaregiverProvider>
       </body>
     </html>
   );

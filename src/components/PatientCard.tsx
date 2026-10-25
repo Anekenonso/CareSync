@@ -6,9 +6,10 @@ import { Patient } from "@/types";
 
 interface PatientCardProps {
   patient: Patient;
+  onClearPatient?: () => void;
 }
 
-export function PatientCard({ patient }: PatientCardProps) {
+export function PatientCard({ patient, onClearPatient }: PatientCardProps) {
   return (
     <div className="bg-white dark:bg-[#0E1B15] rounded-2xl p-5 sm:p-6 mb-5 border border-[#E3E8DE] dark:border-[#1C3328] shadow-sm relative overflow-hidden">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -22,7 +23,7 @@ export function PatientCard({ patient }: PatientCardProps) {
               <h2 className="text-xl font-extrabold text-[#0A0F0D] dark:text-[#F4FBF7] tracking-tight">
                 {patient.name}
               </h2>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-[#0D6832] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-semibold">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-[#059669] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-semibold">
                 {patient.age} yrs • Mother
               </span>
               <span className="text-xs text-[#71717A] dark:text-[#8FA698] flex items-center gap-1">
@@ -49,18 +50,30 @@ export function PatientCard({ patient }: PatientCardProps) {
 
               <div className="hidden sm:inline text-slate-300 dark:text-slate-700">•</div>
 
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-[#0D6832] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 font-medium">
-                <Pill className="w-3 h-3 text-[#0D6832] dark:text-[#34D399]" />
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-[#059669] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 font-medium">
+                <Pill className="w-3 h-3 text-[#059669] dark:text-[#34D399]" />
                 <span><strong>5</strong> Active Prescriptions</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Sync Status Badge */}
-        <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-[#0D6832] dark:text-emerald-300 self-start md:self-auto shadow-sm">
-          <ShieldCheck className="w-4 h-4 text-[#0D6832] dark:text-[#34D399]" />
-          <span>Records In-Sync</span>
+        {/* Sync Status Badge & Clear Option */}
+        <div className="flex items-center gap-2 self-start md:self-auto flex-wrap">
+          <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-[#059669] dark:text-emerald-300 shadow-xs">
+            <ShieldCheck className="w-4 h-4 text-[#00D287]" />
+            <span>Records In-Sync</span>
+          </div>
+
+          {onClearPatient && (
+            <button
+              onClick={onClearPatient}
+              className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-[#F3F6F1] hover:bg-rose-50 dark:bg-[#13241C] dark:hover:bg-rose-950/40 border border-[#CBD5C8] hover:border-rose-300 dark:border-[#274737] dark:hover:border-rose-800 text-[#52525B] hover:text-rose-600 dark:text-[#A1A1AA] dark:hover:text-rose-300 transition-colors cursor-pointer"
+              title="Clear active patient and return to empty start"
+            >
+              Clear Record
+            </button>
+          )}
         </div>
       </div>
     </div>
