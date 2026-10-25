@@ -120,10 +120,10 @@ DISCLAIMER: CareSync is a family health coordination tool, not a medical diagnos
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
           <button
             onClick={handleCopy}
-            className="px-4 py-2.5 rounded-xl bg-[#F3F6F1] hover:bg-[#EAEFE7] dark:bg-[#13241C] dark:hover:bg-[#182C22] text-[#27272A] dark:text-[#D1E0D7] text-xs font-semibold border border-[#CBD5C8] dark:border-[#274737] flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#F3F6F1] hover:bg-[#EAEFE7] dark:bg-[#13241C] dark:hover:bg-[#182C22] text-[#27272A] dark:text-[#D1E0D7] text-xs font-semibold border border-[#CBD5C8] dark:border-[#274737] flex items-center justify-center gap-1.5 transition-colors cursor-pointer min-h-[44px]"
           >
             {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
             {copied ? "Copied to Clipboard!" : "Copy Brief"}
@@ -131,7 +131,7 @@ DISCLAIMER: CareSync is a family health coordination tool, not a medical diagnos
 
           <button
             onClick={handlePrint}
-            className="px-4 py-2.5 rounded-xl bg-[#0D6832] hover:bg-[#094D25] text-white text-xs font-semibold shadow-sm flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#0D6832] hover:bg-[#094D25] text-white text-xs font-semibold shadow-sm flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer min-h-[44px]"
           >
             <Printer className="w-4 h-4" />
             <span>Print 1-Page Handout</span>
@@ -264,22 +264,61 @@ DISCLAIMER: CareSync is a family health coordination tool, not a medical diagnos
             <HelpCircle className="w-4 h-4 text-[#0D6832] dark:text-[#34D399]" />
             — 4. SPECIFIC DISCUSSION QUESTIONS FOR CAREGIVER TO ASK DR. CHEN
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs sm:text-sm">
-            <div className="p-3.5 rounded-xl bg-emerald-50/50 dark:bg-[#13241C]/60 border border-emerald-100 dark:border-[#1C3328] text-[#0A0F0D] dark:text-[#F4FBF7]">
-              <strong className="text-[#0D6832] dark:text-[#34D399] block mb-1 font-bold">Q1: About the knee pain medication:</strong>
-              &quot;Could the Meloxicam prescribed at Urgent Care be what dropped Eleanor&apos;s kidney numbers from 54 to 42? Should we stop it now?&quot;
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs sm:text-sm items-stretch">
+            <div className="p-4 rounded-xl bg-emerald-50/50 dark:bg-[#13241C]/60 border border-emerald-100 dark:border-[#1C3328] text-[#0A0F0D] dark:text-[#F4FBF7] flex flex-col justify-between hover:shadow-xs transition-all">
+              <div>
+                <strong className="text-[#0D6832] dark:text-[#34D399] block mb-1.5 font-bold font-mono text-xs uppercase tracking-wide">
+                  Question 1: About the knee pain medication
+                </strong>
+                <p className="leading-relaxed">
+                  &quot;Could the Meloxicam prescribed at Urgent Care be what dropped Eleanor&apos;s kidney filtration from 54 down to 42? Should we stop taking it immediately?&quot;
+                </p>
+              </div>
+              <span className="text-[11px] text-[#71717A] dark:text-[#8FA698] mt-3 block pt-2 border-t border-emerald-100 dark:border-[#1C3328]/60 font-medium">
+                Goal: Prevent further acute kidney strain and reverse filtration loss.
+              </span>
             </div>
-            <div className="p-3.5 rounded-xl bg-emerald-50/50 dark:bg-[#13241C]/60 border border-emerald-100 dark:border-[#1C3328] text-[#0A0F0D] dark:text-[#F4FBF7]">
-              <strong className="text-[#0D6832] dark:text-[#34D399] block mb-1 font-bold">Q2: Safer pain relief options:</strong>
-              &quot;What alternative options like topical gels or joint injections can we use for her knee arthritis that won&apos;t hurt her kidneys?&quot;
+
+            <div className="p-4 rounded-xl bg-emerald-50/50 dark:bg-[#13241C]/60 border border-emerald-100 dark:border-[#1C3328] text-[#0A0F0D] dark:text-[#F4FBF7] flex flex-col justify-between hover:shadow-xs transition-all">
+              <div>
+                <strong className="text-[#0D6832] dark:text-[#34D399] block mb-1.5 font-bold font-mono text-xs uppercase tracking-wide">
+                  Question 2: Kidney-safe pain relief options
+                </strong>
+                <p className="leading-relaxed">
+                  &quot;What alternative options like topical gels (Voltaren) or joint injections can we use for her knee arthritis that won&apos;t hurt her kidneys?&quot;
+                </p>
+              </div>
+              <span className="text-[11px] text-[#71717A] dark:text-[#8FA698] mt-3 block pt-2 border-t border-emerald-100 dark:border-[#1C3328]/60 font-medium">
+                Goal: Treat arthritis pain without systemic kidney absorption.
+              </span>
             </div>
-            <div className="p-3.5 rounded-xl bg-emerald-50/50 dark:bg-[#13241C]/60 border border-emerald-100 dark:border-[#1C3328] text-[#0A0F0D] dark:text-[#F4FBF7]">
-              <strong className="text-[#0D6832] dark:text-[#34D399] block mb-1 font-bold">Q3: Follow-up lab testing:</strong>
-              &quot;When can we repeat her blood test to make sure her kidney function bounces back to its normal baseline?&quot;
+
+            <div className="p-4 rounded-xl bg-emerald-50/50 dark:bg-[#13241C]/60 border border-emerald-100 dark:border-[#1C3328] text-[#0A0F0D] dark:text-[#F4FBF7] flex flex-col justify-between hover:shadow-xs transition-all">
+              <div>
+                <strong className="text-[#0D6832] dark:text-[#34D399] block mb-1.5 font-bold font-mono text-xs uppercase tracking-wide">
+                  Question 3: Follow-up lab re-check
+                </strong>
+                <p className="leading-relaxed">
+                  &quot;When can we repeat her blood test (BMP) to verify that her kidney numbers are bouncing back to her baseline of 54?&quot;
+                </p>
+              </div>
+              <span className="text-[11px] text-[#71717A] dark:text-[#8FA698] mt-3 block pt-2 border-t border-emerald-100 dark:border-[#1C3328]/60 font-medium">
+                Goal: Establish clinical recovery timeline (usually 7-10 days).
+              </span>
             </div>
-            <div className="p-3.5 rounded-xl bg-emerald-50/50 dark:bg-[#13241C]/60 border border-emerald-100 dark:border-[#1C3328] text-[#0A0F0D] dark:text-[#F4FBF7]">
-              <strong className="text-[#0D6832] dark:text-[#34D399] block mb-1 font-bold">Q4: Diabetes medication adjustment:</strong>
-              &quot;Her eGFR is now 42. Does her Metformin 1000mg dose need to be adjusted down for kidney safety?&quot;
+
+            <div className="p-4 rounded-xl bg-emerald-50/50 dark:bg-[#13241C]/60 border border-emerald-100 dark:border-[#1C3328] text-[#0A0F0D] dark:text-[#F4FBF7] flex flex-col justify-between hover:shadow-xs transition-all">
+              <div>
+                <strong className="text-[#0D6832] dark:text-[#34D399] block mb-1.5 font-bold font-mono text-xs uppercase tracking-wide">
+                  Question 4: Diabetes medication review
+                </strong>
+                <p className="leading-relaxed">
+                  &quot;With her eGFR at 42, does Eleanor&apos;s Metformin dose need a temporary reduction until her kidneys recover?&quot;
+                </p>
+              </div>
+              <span className="text-[11px] text-[#71717A] dark:text-[#8FA698] mt-3 block pt-2 border-t border-emerald-100 dark:border-[#1C3328]/60 font-medium">
+                Goal: Ensure Metformin remains within safe guidelines when filtration is &lt; 45.
+              </span>
             </div>
           </div>
         </div>

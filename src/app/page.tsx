@@ -54,7 +54,7 @@ export default function CareSyncApp() {
         {/* Single Primary Call-to-Action (GenAI Works Signature Evergreen) */}
         <button
           onClick={() => setIsIntakeOpen(true)}
-          className="px-5 py-3 rounded-xl bg-[#0D6832] hover:bg-[#094D25] text-white font-semibold text-xs sm:text-sm flex items-center gap-2.5 shrink-0 shadow-sm hover:shadow-md active:scale-95 transition-all self-start sm:self-auto cursor-pointer"
+          className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-[#0D6832] hover:bg-[#094D25] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2.5 shrink-0 shadow-sm hover:shadow-md active:scale-95 transition-all self-stretch sm:self-auto cursor-pointer min-h-[48px]"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Upload Doctor Note or Lab (PDF)</span>
@@ -64,30 +64,30 @@ export default function CareSyncApp() {
       {/* 2. Patient Context Card */}
       <PatientCard patient={patientEleanorVance} />
 
-      {/* 3. Clinical Segmented Tab Navigation */}
-      <div className="flex items-center justify-between border-b border-[#E3E8DE] dark:border-[#1C3328] pb-3 no-print">
-        <div className="flex items-center gap-2 text-sm bg-[#F3F6F1] dark:bg-[#13241C] p-1.5 rounded-2xl border border-[#E3E8DE] dark:border-[#1C3328]">
+      {/* 3. Clinical Segmented Tab Navigation (Responsive Full-Width on Mobile) */}
+      <div className="border-b border-[#E3E8DE] dark:border-[#1C3328] pb-3 no-print">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm bg-[#F3F6F1] dark:bg-[#13241C] p-1.5 rounded-2xl border border-[#E3E8DE] dark:border-[#1C3328] w-full max-w-xl">
           <button
             onClick={() => setActiveTab("overview")}
-            className={`px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 ${
+            className={`px-3.5 py-2.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 min-h-[44px] ${
               activeTab === "overview"
                 ? "bg-white dark:bg-[#182C22] text-[#0D6832] dark:text-[#34D399] shadow-sm border border-[#E3E8DE] dark:border-[#274737]"
                 : "text-[#71717A] dark:text-[#8FA698] hover:text-[#0A0F0D] dark:hover:text-white hover:bg-white/50 dark:hover:bg-[#182C22]/50"
             }`}
           >
-            <Clock className="w-4 h-4 text-[#0D6832] dark:text-[#34D399]" />
-            Health Timeline &amp; What Changed
+            <Clock className="w-4 h-4 text-[#0D6832] dark:text-[#34D399] shrink-0" />
+            <span>Health Timeline &amp; What Changed</span>
           </button>
 
           <button
             onClick={() => setActiveTab("visitPrep")}
-            className={`px-4 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2 ${
+            className={`px-3.5 py-2.5 rounded-xl font-bold transition-all flex items-center justify-center gap-2 min-h-[44px] ${
               activeTab === "visitPrep"
                 ? "bg-white dark:bg-[#182C22] text-[#0D6832] dark:text-[#34D399] shadow-sm border border-[#E3E8DE] dark:border-[#274737]"
                 : "text-[#71717A] dark:text-[#8FA698] hover:text-[#0A0F0D] dark:hover:text-white hover:bg-white/50 dark:hover:bg-[#182C22]/50"
             }`}
           >
-            <Stethoscope className="w-4 h-4 text-[#0D6832] dark:text-[#34D399]" />
+            <Stethoscope className="w-4 h-4 text-[#0D6832] dark:text-[#34D399] shrink-0" />
             <span>Doctor Visit-Prep Package</span>
             <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-[#0D6832] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-semibold">
               Printable
@@ -96,8 +96,8 @@ export default function CareSyncApp() {
         </div>
       </div>
 
-      {/* 4. Tab Views */}
-      <div>
+      {/* 4. Tab Views with Smooth Fade Transitions */}
+      <div className="transition-all duration-300 animate-in fade-in">
         {activeTab === "overview" && (
           <OverviewTimeline
             onSelectVisitPrepTab={() => setActiveTab("visitPrep")}
