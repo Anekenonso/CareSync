@@ -23,6 +23,7 @@ node_modules/
 out/
 build/
 dist/
+*.tsbuildinfo
 
 # ==============================================================================
 # Python / Agent Environments & Cache
@@ -56,4 +57,7 @@ Thumbs.db
 
 # Local agent tools & skills
 .claude/
+
+# Pitch & presentation materials
+docs/SLIDE_DECK.md
 
