@@ -11,48 +11,49 @@ interface PatientCardProps {
 
 export function PatientCard({ patient, onClearPatient }: PatientCardProps) {
   return (
-    <div className="bg-white dark:bg-[#0E1B15] rounded-2xl p-5 sm:p-6 mb-5 border border-[#E3E8DE] dark:border-[#1C3328] shadow-sm relative overflow-hidden">
+    <div className="medical-card p-5 sm:p-6 mb-5">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Patient Identity */}
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#00D287] via-[#10B981] to-[#059669] flex items-center justify-center text-white font-extrabold text-base shadow-sm ring-4 ring-emerald-50 dark:ring-emerald-950/40 shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-[#0E6238] dark:bg-[#199A59] flex items-center justify-center text-white font-bold text-base shadow-xs shrink-0">
             {patient.name.split(" ").map((n) => n[0]).join("")}
           </div>
           <div>
             <div className="flex items-center gap-2.5 flex-wrap">
-              <h2 className="text-xl font-extrabold text-[#0A0F0D] dark:text-[#F4FBF7] tracking-tight">
+              <h2 className="text-xl font-bold text-[#0A0F0D] dark:text-[#FFFFFF] tracking-tight">
                 {patient.name}
               </h2>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-[#059669] dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 font-semibold">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#EBF7F0] dark:bg-[#1F1F1F] text-[#0E6238] dark:text-[#199A59] border border-[#CBD3C6] dark:border-[#313131] font-semibold tabular-nums">
                 {patient.age} yrs • Mother
               </span>
-              <span className="text-xs text-[#71717A] dark:text-[#8FA698] flex items-center gap-1">
-                <Stethoscope className="w-3.5 h-3.5 text-[#71717A]" />
-                PCP: <strong className="text-[#27272A] dark:text-[#D1E0D7]">{patient.primaryPhysician}</strong>
+              <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] flex items-center gap-1">
+                <Stethoscope className="w-3.5 h-3.5 text-[#6B7280] dark:text-[#9CA3AF]" />
+                <span>PCP:</span>
+                <strong className="text-[#0A0F0D] dark:text-[#FFFFFF] font-medium">{patient.primaryPhysician}</strong>
               </span>
             </div>
 
-            {/* Conditions & Prescriptions Summary Badges */}
+            {/* Conditions & Prescriptions Badges */}
             <div className="flex items-center gap-2 text-xs mt-2.5 flex-wrap">
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 border border-amber-200/80 dark:border-amber-800/60 font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                <span>CKD Stage 3a (Kidney)</span>
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#FEF3C7] dark:bg-[#1F1F1F] text-[#D97706] dark:text-[#FBBF24] border border-[#FDE68A] dark:border-[#313131] font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#D97706] dark:bg-[#FBBF24]"></span>
+                <span>CKD stage 3a (kidney)</span>
               </div>
 
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-900 dark:text-rose-200 border border-rose-200/80 dark:border-rose-800/60 font-medium">
-                <Heart className="w-3 h-3 text-rose-500" />
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#FFF1F2] dark:bg-[#1F1F1F] text-[#BE123C] dark:text-[#FB7185] border border-[#FECDD3] dark:border-[#313131] font-medium">
+                <Heart className="w-3 h-3 text-[#BE123C] dark:text-[#FB7185]" />
                 <span>Hypertension</span>
               </div>
 
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F3F6F1] dark:bg-[#13241C] text-[#27272A] dark:text-[#D1E0D7] border border-[#E3E8DE] dark:border-[#1C3328] font-medium">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#F4F6F2] dark:bg-[#1F1F1F] text-[#27272A] dark:text-[#E5E7EB] border border-[#E2E7DE] dark:border-[#272727] font-medium">
                 <span>Osteoarthritis</span>
               </div>
 
-              <div className="hidden sm:inline text-slate-300 dark:text-slate-700">•</div>
+              <span className="hidden sm:inline text-[#CBD3C6] dark:text-[#313131]">•</span>
 
-              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-[#059669] dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 font-medium">
-                <Pill className="w-3 h-3 text-[#059669] dark:text-[#34D399]" />
-                <span><strong>5</strong> Active Prescriptions</span>
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#EBF7F0] dark:bg-[#1F1F1F] text-[#0E6238] dark:text-[#199A59] border border-[#CBD3C6] dark:border-[#313131] font-medium">
+                <Pill className="w-3 h-3 text-[#0E6238] dark:text-[#199A59]" />
+                <span className="tabular-nums"><strong className="font-semibold">5</strong> active prescriptions</span>
               </div>
             </div>
           </div>
@@ -60,18 +61,19 @@ export function PatientCard({ patient, onClearPatient }: PatientCardProps) {
 
         {/* Sync Status Badge & Clear Option */}
         <div className="flex items-center gap-2 self-start md:self-auto flex-wrap">
-          <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-[#059669] dark:text-emerald-300 shadow-xs">
-            <ShieldCheck className="w-4 h-4 text-[#00D287]" />
-            <span>Records In-Sync</span>
+          <div className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-[#EBF7F0] dark:bg-[#1F1F1F] border border-[#CBD3C6] dark:border-[#313131] text-[#0E6238] dark:text-[#199A59]">
+            <ShieldCheck className="w-4 h-4 text-[#0E6238] dark:text-[#199A59]" />
+            <span>Records in-sync</span>
           </div>
 
           {onClearPatient && (
             <button
+              type="button"
               onClick={onClearPatient}
-              className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-[#F3F6F1] hover:bg-rose-50 dark:bg-[#13241C] dark:hover:bg-rose-950/40 border border-[#CBD5C8] hover:border-rose-300 dark:border-[#274737] dark:hover:border-rose-800 text-[#52525B] hover:text-rose-600 dark:text-[#A1A1AA] dark:hover:text-rose-300 transition-colors cursor-pointer"
-              title="Clear active patient and return to empty start"
+              className="text-xs font-semibold px-3 py-1.5 rounded-xl bg-[#F4F6F2] hover:bg-[#FFF1F2] dark:bg-[#1F1F1F] dark:hover:bg-[#1F1F1F] border border-[#CBD3C6] hover:border-[#FECDD3] dark:border-[#313131] dark:hover:border-[#313131] text-[#6B7280] hover:text-[#BE123C] dark:text-[#9CA3AF] dark:hover:text-[#FB7185] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98] cursor-pointer"
+              title="Clear active patient and return to initial state"
             >
-              Clear Record
+              Clear record
             </button>
           )}
         </div>

@@ -10,26 +10,45 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "#080E1A",
-        card: "rgba(15, 23, 42, 0.75)",
-        surface: "#0F172A",
-        "surface-light": "#1E293B",
-        "surface-border": "rgba(255, 255, 255, 0.08)",
-        primary: {
-          DEFAULT: "#0D6832",
-          hover: "#094D25",
-          glow: "rgba(13, 104, 50, 0.25)",
+        background: "#FAFBF8",
+        dark: {
+          bg: "#000000",
+          surface: "#181818",
+          elevated: "#1F1F1F",
+          border: "#272727",
+          muted: "#313131",
+          subtle: "#131209",
         },
-        accent: {
-          teal: "#14B8A6",
-          emerald: "#10B981",
-          amber: "#F59E0B",
-          rose: "#F43F5E",
-          indigo: "#6366F1",
+        surface: {
+          light: "#FFFFFF",
+          subtle: "#F4F6F2",
+          border: "#E2E7DE",
+        },
+        primary: {
+          DEFAULT: "#0E6238",
+          hover: "#0B4E2D",
+          subtle: "#EBF7F0",
+          dark: "#199A59",
+          darkHover: "#22B56C",
+        },
+        clinical: {
+          amber: "#D97706",
+          amberSubtle: "#FEF3C7",
+          amberDark: "#F59E0B",
+          rose: "#BE123C",
+          roseSubtle: "#FFF1F2",
+          roseDark: "#F43F5E",
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "Inter", "-apple-system", "BlinkMacSystemFont", "sans-serif"],
+        sans: ["Geist", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        mono: ["'Geist Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
+      },
+      transitionTimingFunction: {
+        smooth: "cubic-bezier(0.32, 0.72, 0, 1)",
+      },
+      transitionDuration: {
+        smooth: "700ms",
       },
     },
   },

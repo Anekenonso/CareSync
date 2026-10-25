@@ -49,47 +49,63 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-[#FAFBF8] dark:bg-[#07100B] text-[#0A0F0D] dark:text-[#F4FBF7] antialiased selection:bg-[#0D6832] selection:text-white relative">
-        {/* Subtle Ambient Medical Mesh */}
-        <div className="medical-ambient-bg" />
+      <body className="min-h-[100dvh] flex flex-col bg-[#FAFBF8] dark:bg-[#000000] text-[#0A0F0D] dark:text-[#FFFFFF] antialiased selection:bg-[#0E6238] selection:text-white relative">
+        {/* Skip to content link for accessibility */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white dark:focus:bg-[#181818] focus:text-[#0E6238] dark:focus:text-[#199A59] focus:border focus:border-[#CBD3C6] dark:focus:border-[#272727] focus:rounded-lg focus:shadow-md focus:text-sm font-semibold"
+        >
+          Skip to content
+        </a>
+
+        {/* Tactile Grain Overlay */}
+        <div className="grain-overlay" />
 
         {/* Top Clinical Safety Guardrail Notice */}
-        <div className="bg-[#F0FDF4] dark:bg-[#0B1E14] border-b border-[#DCFCE7] dark:border-[#163826] px-3 sm:px-4 py-2 text-xs text-[#14532D] dark:text-[#A7F3D0] no-print z-30">
-          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-3">
+        <aside aria-label="Clinical notice" className="bg-[#EBF7F0] dark:bg-[#181818] border-b border-[#E2E7DE] dark:border-[#272727] px-4 py-2 text-xs text-[#0E6238] dark:text-[#E5E7EB] no-print z-30">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3">
             <div className="flex items-start sm:items-center gap-2">
-              <ShieldAlert className="w-4 h-4 text-[#059669] dark:text-[#34D399] shrink-0 mt-0.5 sm:mt-0" />
+              <ShieldAlert className="w-4 h-4 text-[#0E6238] dark:text-[#199A59] shrink-0 mt-0.5 sm:mt-0" />
               <span className="leading-snug">
-                <strong className="font-bold text-[#059669] dark:text-[#86EFAC]">Caregiver Note:</strong> CareSync translates complicated medical reports into plain English for family discussions. It does <span className="underline decoration-[#10B981] font-bold">not</span> replace your doctor&apos;s advice.
+                <strong className="font-semibold text-[#0E6238] dark:text-[#199A59]">Caregiver note:</strong> CareSync translates complicated medical reports into plain English for family discussions. It does not replace your physician&apos;s medical advice.
               </span>
             </div>
-            <span className="text-[10px] font-bold tracking-wide uppercase px-2 py-0.5 rounded bg-[#DCFCE7] dark:bg-[#133222] border border-[#BBF7D0] dark:border-[#1E4D34] text-[#14532D] dark:text-[#86EFAC] self-start sm:self-auto shrink-0 font-mono">
-              Plain English • Decision Support
+            <span className="text-xs font-semibold px-2 py-0.5 rounded bg-white dark:bg-[#1F1F1F] border border-[#CBD3C6] dark:border-[#313131] text-[#0E6238] dark:text-[#199A59] self-start sm:self-auto shrink-0 font-mono tabular-nums">
+              Plain English • Decision support
             </span>
           </div>
-        </div>
+        </aside>
 
         <CaregiverProvider>
-          {/* Global Navigation Header with Clinical Theme Switcher */}
+          {/* Global Navigation Header with Floating Island Island Design */}
           <NavigationHeader />
 
-          {/* Main Application Area (Responsive Mobile Padding) */}
-          <main className="flex-1 max-w-6xl w-full mx-auto px-3.5 sm:px-6 py-4 sm:py-6 relative z-10">
+          {/* Main Application Area */}
+          <main id="main-content" className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 relative z-10">
             {children}
           </main>
 
-          {/* Clean, Bold & Visible Caregiver Footer */}
-          <footer className="mt-8 border-t border-[#CBD5C8] dark:border-[#274737] bg-white dark:bg-[#0E1B15] py-5 text-xs sm:text-sm text-[#27272A] dark:text-[#E2E8F0] no-print relative z-10 shadow-xs">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left font-semibold">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#00D287] inline-block shrink-0 shadow-xs"></span>
-                <p className="text-[#0A0F0D] dark:text-[#F4FBF7]">
-                  © {new Date().getFullYear()} <strong className="font-extrabold text-[#059669] dark:text-[#34D399]">CareSync</strong>. Dedicated to family caregivers and patient health safety.
+          {/* Clean, Visible Caregiver Footer with Legal & Compliance */}
+          <footer className="mt-12 border-t border-[#E2E7DE] dark:border-[#272727] bg-[#FFFFFF] dark:bg-[#181818] py-6 text-xs text-[#6B7280] dark:text-[#9CA3AF] no-print relative z-10">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+              <div className="flex items-center gap-2.5">
+                <span className="w-2 h-2 rounded-full bg-[#0E6238] dark:bg-[#199A59] inline-block shrink-0"></span>
+                <p className="text-[#0A0F0D] dark:text-[#FFFFFF] font-medium">
+                  © {new Date().getFullYear()} <strong className="font-semibold text-[#0E6238] dark:text-[#199A59]">CareSync</strong>. Family health evidence and longitudinal coordination.
                 </p>
               </div>
-              <div className="flex items-center gap-3 text-[#52525B] dark:text-[#94A3B8]">
-                <span>All source records verified</span>
-                <span>•</span>
-                <span>HIPAA-Safe Data Processing</span>
+              <div className="flex flex-wrap items-center justify-center gap-3 font-medium">
+                <span className="text-[#0A0F0D] dark:text-[#E5E7EB]">All source records verified</span>
+                <span className="text-[#CBD3C6] dark:text-[#313131]">•</span>
+                <span>HIPAA-safe data processing</span>
+                <span className="text-[#CBD3C6] dark:text-[#313131]">•</span>
+                <a href="#clinical-disclaimer" className="hover:text-[#0E6238] dark:hover:text-[#199A59] transition-colors underline-offset-2 hover:underline">
+                  Clinical safety policy
+                </a>
+                <span className="text-[#CBD3C6] dark:text-[#313131]">•</span>
+                <a href="#terms-modal" className="hover:text-[#0E6238] dark:hover:text-[#199A59] transition-colors underline-offset-2 hover:underline">
+                  Privacy and terms
+                </a>
               </div>
             </div>
           </footer>

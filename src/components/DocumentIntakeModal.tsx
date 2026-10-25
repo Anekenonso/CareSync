@@ -8,7 +8,6 @@ import {
   CheckCircle2,
   AlertTriangle,
   ArrowRight,
-  Sparkles,
   FileText,
   FileUp,
   FileCheck2,
@@ -16,7 +15,6 @@ import {
   HelpCircle,
   Activity,
   Clock,
-  ShieldCheck,
 } from "lucide-react";
 
 interface DocumentIntakeModalProps {
@@ -62,7 +60,6 @@ export function DocumentIntakeModal({
 
   if (!isOpen || !mounted) return null;
 
-  // Handle native drag & drop
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
@@ -105,7 +102,6 @@ export function DocumentIntakeModal({
     }
   };
 
-  // 1-Click Sample Document Loader with auto-trigger option for instant evaluator testing
   const handleLoadSample = async (sampleType: "meloxicam" | "quest") => {
     if (sampleType === "meloxicam") {
       const mockFile = new File(
@@ -134,7 +130,6 @@ export function DocumentIntakeModal({
     }
   };
 
-  // Core extraction runner used by both form submit and 1-click sample test buttons
   const executeExtraction = async (fileToProcess: File, facilityName: string, typeName: string) => {
     setIsProcessing(true);
     setExtractionStep("Reading document and translating medical terms into plain English...");
@@ -147,7 +142,7 @@ export function DocumentIntakeModal({
       formData.append("docType", typeName);
 
       await new Promise((r) => setTimeout(r, 450));
-      setExtractionStep("Comparing with Mom's past medical records to see what changed...");
+      setExtractionStep("Cross-referencing with previous records to detect metric shifts...");
 
       let data: any = null;
       try {
@@ -162,7 +157,6 @@ export function DocumentIntakeModal({
         console.warn("API route network warning, generating fallback structured data", networkErr);
       }
 
-      // If backend returned facts, use them; otherwise provide rich plain-language fallback
       if (!data || !data.extractedFacts) {
         const isQuest = fileToProcess.name.toLowerCase().includes("quest") || typeName === "lab";
         if (isQuest) {
@@ -171,21 +165,21 @@ export function DocumentIntakeModal({
             facility: facilityName,
             extractedFacts: {
               type: "lab_panel",
-              title: "Quest Diagnostics: Kidney & Metabolic Blood Test",
+              title: "Quest Diagnostics: Kidney and metabolic panel",
               details: [
-                "Kidney Filtration (eGFR): 42 mL/min (Dropped from baseline 54)",
-                "Blood Waste (Creatinine): 1.82 mg/dL (Spiked from baseline 1.28)",
-                "Potassium: 5.2 mEq/L (Higher than normal safe range)",
-                "BUN (Blood Urea Nitrogen): 36 mg/dL (Elevated waste)",
+                "Kidney filtration (eGFR): 42 mL/min (dropped from baseline 54)",
+                "Serum creatinine: 1.82 mg/dL (spiked from baseline 1.28)",
+                "Potassium: 5.2 mEq/L (elevated above safe ceiling)",
+                "Blood urea nitrogen (BUN): 36 mg/dL (elevated waste)",
               ],
               plainEnglish: {
-                whatIsThis: "An outpatient blood test measuring Mom's kidney health and electrolyte balance.",
-                whatItDoes: "It tests how effectively her kidneys filter natural waste and toxins out of her bloodstream.",
-                whatChanged: "Mom's kidney filtration rate (eGFR) dropped sharply by 22% (from 54 down to 42 mL/min). This sudden drop happened right after she started taking the new Meloxicam pain pills from Urgent Care.",
-                actionForDoctor: "Ask Dr. Chen: 'Should we stop Meloxicam immediately to protect Mom's kidneys, and when should we re-test her blood to make sure her numbers recover?'",
+                whatIsThis: "An outpatient blood test measuring kidney health and electrolyte balance.",
+                whatItDoes: "It tests how effectively kidneys filter natural waste and toxins out of the bloodstream.",
+                whatChanged: "Filtration rate (eGFR) dropped sharply by 22% (from 54 down to 42 mL/min). This sudden drop directly correlates with starting Meloxicam pain tablets.",
+                actionForDoctor: "Ask Dr. Chen: 'Should we stop Meloxicam immediately to protect her kidneys, and when should we repeat blood work to ensure filtration recovers?'",
               },
               safetyAlert:
-                "Kidney Warning: Filtration rate dropped 22% (eGFR 42 mL/min). Correlates with starting Meloxicam alongside Lisinopril.",
+                "Filtration rate dropped 22% (eGFR 42 mL/min). Correlates with starting Meloxicam alongside chronic Lisinopril.",
             },
           };
         } else {
@@ -194,21 +188,21 @@ export function DocumentIntakeModal({
             facility: facilityName,
             extractedFacts: {
               type: "medication_addition",
-              title: "QuickCare Urgent Clinic: Knee Pain Prescription",
+              title: "QuickCare Urgent Clinic: Knee pain prescription",
               details: [
-                "New Medicine: Meloxicam 15mg oral tablet once daily",
-                "Prescribed For: Acute right knee joint pain and swelling",
+                "New medicine: Meloxicam 15mg oral tablet once daily",
+                "Prescribed for: Acute right knee joint pain and swelling",
                 "Prescriber: QuickCare Urgent Clinic (Dr. Sarah Jenkins)",
-                "Existing Regimen: Lisinopril 20mg daily for blood pressure",
+                "Existing regimen: Lisinopril 20mg daily for blood pressure",
               ],
               plainEnglish: {
                 whatIsThis: "A doctor's prescription for a strong anti-inflammatory pain medicine (Meloxicam) given during a walk-in clinic visit.",
-                whatItDoes: "Meloxicam relieves joint swelling, but it temporarily pinches the blood vessels that supply blood to the kidneys.",
-                whatChanged: "The urgent care clinic did not have Mom's outpatient kidney records. Taking Meloxicam while already on Lisinopril starves her kidneys of blood flow.",
-                actionForDoctor: "Ask Dr. Chen: 'Can we switch Mom to a safer topical gel (like Voltaren) or knee injection that relieves her arthritis pain without hurting her kidneys?'",
+                whatItDoes: "Meloxicam relieves joint swelling, but it temporarily constricts blood vessels that supply blood flow to the kidneys.",
+                whatChanged: "The urgent care clinic did not have outpatient kidney records. Taking Meloxicam while already taking Lisinopril restricts renal blood flow.",
+                actionForDoctor: "Ask Dr. Chen: 'Can we switch to a safer topical gel (like Voltaren) or joint injection that relieves knee pain without stressing her kidneys?'",
               },
               safetyAlert:
-                "Medication Clash: Meloxicam + Lisinopril severely restricts kidney blood flow in patients with chronic kidney disease.",
+                "Medication clash: Meloxicam + Lisinopril severely restricts kidney perfusion in baseline chronic kidney disease.",
             },
           };
         }
@@ -248,293 +242,290 @@ export function DocumentIntakeModal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[99999] overflow-hidden bg-black/80 backdrop-blur-2xl p-3 sm:p-6 flex items-center justify-center no-print animate-in fade-in duration-200"
-      style={{
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-      }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      className="fixed inset-0 z-50 overflow-hidden bg-black/60 backdrop-blur-md p-4 sm:p-6 flex items-center justify-center no-print"
     >
-      {/* Background click overlay to blur out page and capture clicks */}
+      {/* Background click overlay */}
       <div
-        className="fixed inset-0 bg-transparent cursor-pointer"
+        className="fixed inset-0 cursor-pointer"
         onClick={onClose}
         aria-hidden="true"
-        title="Click background to close"
       />
 
-      {/* Modal Dialog Card (Strictly centered, responsive, max-w-xl, contained, never clipped under header) */}
-      <div className="relative w-full max-w-xl mx-auto my-auto bg-white dark:bg-[#0E1B15] border-2 border-[#CBD5C8] dark:border-[#274737] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[88vh] sm:max-h-[85vh] z-10 animate-in zoom-in-95 duration-150">
-        {/* Pinned Modal Header (Never hidden under header cards or offscreen) */}
-        <div className="shrink-0 p-4 sm:p-5 border-b border-[#E3E8DE] dark:border-[#1C3328] bg-white dark:bg-[#0E1B15] flex items-start justify-between gap-3">
-          <div className="pr-2">
-            <div className="flex items-center gap-2 text-[#059669] dark:text-[#34D399]">
-              <Upload className="w-4 h-4 shrink-0 text-[#00D287]" />
-              <span className="text-[10px] sm:text-[11px] font-bold tracking-widest uppercase font-mono">
-                — PLAIN-LANGUAGE DOCUMENT EXPLAINER
+      {/* Modal Dialog Card */}
+      <div className="relative w-full max-w-xl mx-auto my-auto bg-white dark:bg-[#181818] border border-[#E2E7DE] dark:border-[#272727] rounded-2xl shadow-xl overflow-hidden flex flex-col max-h-[88vh] z-10 transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)]">
+        {/* Modal Header */}
+        <div className="shrink-0 p-5 border-b border-[#E2E7DE] dark:border-[#272727] bg-white dark:bg-[#181818] flex items-start justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2 text-[#0E6238] dark:text-[#199A59]">
+              <Upload className="w-4 h-4 shrink-0" />
+              <span className="text-xs font-semibold tracking-wider uppercase font-mono">
+                Plain-language document explainer
               </span>
             </div>
-            <h3 className="text-base sm:text-xl font-extrabold text-[#0A0F0D] dark:text-[#F4FBF7] tracking-tight mt-1">
-              {extractedResult ? "Medical Report Explained Simply" : "Upload Doctor Note or Lab Test"}
+            <h3 id="modal-title" className="text-lg font-bold text-[#0A0F0D] dark:text-[#FFFFFF] tracking-tight mt-1">
+              {extractedResult ? "Medical report explained simply" : "Upload doctor note or lab test"}
             </h3>
-            <p className="text-xs text-[#71717A] dark:text-[#8FA698] mt-0.5">
+            <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-0.5">
               {extractedResult
-                ? "We translated this report into everyday words so you know exactly what changed and what to ask."
-                : "Upload any medical paper. We explain what it means, what it does, and what changed."}
+                ? "We translated this report into everyday words so you know what changed and what to ask."
+                : "Upload any medical record. We explain what it means, what it does, and what changed."}
             </p>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="text-[#71717A] hover:text-[#0A0F0D] dark:hover:text-white p-2 rounded-xl hover:bg-[#F3F6F1] dark:hover:bg-[#13241C] transition-colors cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center shrink-0 border border-transparent hover:border-[#CBD5C8] dark:hover:border-[#274737]"
+            className="text-[#6B7280] hover:text-[#0A0F0D] dark:hover:text-white p-2 rounded-xl hover:bg-[#F4F6F2] dark:hover:bg-[#1F1F1F] transition-colors cursor-pointer border border-transparent hover:border-[#CBD3C6] dark:hover:border-[#313131]"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Modal Scrollable Body (Centered & responsive, no horizontal scroll or spanning) */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
-
-        {extractedResult ? (
-          /* Plain-Language Report Breakdown View */
-          <div className="space-y-4 animate-in fade-in zoom-in-95 duration-200">
-            {/* Status confirmation */}
-            <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-start gap-2.5">
-              <CheckCircle2 className="w-5 h-5 text-[#0D6832] dark:text-[#34D399] shrink-0 mt-0.5" />
-              <div>
-                <h4 className="text-xs font-bold text-[#0D6832] dark:text-emerald-300">
-                  {extractedResult.extractedFacts?.title || "Document Ingested"}
-                </h4>
-                <p className="text-[11px] text-[#27272A] dark:text-[#D1E0D7] mt-0.5">
-                  <strong>{selectedFile?.name || extractedResult.fileName}</strong> • Ingested and added to Mom&apos;s timeline.
-                </p>
-              </div>
-            </div>
-
-            {/* 4 Bite-Sized Plain-English Answer Cards (Cleanly Aligned with Responsive Spacing) */}
-            <div className="grid grid-cols-1 gap-3">
-              {/* Card 1: What is this? */}
-              <div className="p-4 rounded-xl bg-[#F3F6F1] dark:bg-[#13241C] border border-[#E3E8DE] dark:border-[#1C3328] border-l-4 border-l-[#0D6832] transition-all hover:shadow-xs">
-                <div className="flex items-center gap-1.5 text-[#0D6832] dark:text-[#34D399] mb-1 font-bold text-xs font-mono uppercase tracking-wider">
-                  <FileText className="w-4 h-4 shrink-0" />
-                  <span>1. What is this report?</span>
+        {/* Modal Scrollable Body */}
+        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
+          {extractedResult ? (
+            /* Plain-Language Report Breakdown View */
+            <div className="space-y-4">
+              {/* Status confirmation */}
+              <div className="p-3.5 rounded-xl bg-[#EBF7F0] dark:bg-[#1F1F1F] border border-[#CBD3C6] dark:border-[#313131] flex items-start gap-2.5">
+                <CheckCircle2 className="w-5 h-5 text-[#0E6238] dark:text-[#199A59] shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="text-xs font-bold text-[#0E6238] dark:text-[#199A59]">
+                    {extractedResult.extractedFacts?.title || "Document ingested"}
+                  </h4>
+                  <p className="text-xs text-[#27272A] dark:text-[#E5E7EB] mt-0.5">
+                    <strong>{selectedFile?.name || extractedResult.fileName}</strong> • Ingested and added to timeline.
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm text-[#27272A] dark:text-[#D1E0D7] leading-relaxed">
-                  {extractedResult.extractedFacts?.plainEnglish?.whatIsThis ||
-                    "An outpatient medical document recorded for Mom's ongoing health care."}
-                </p>
               </div>
 
-              {/* Card 2: What does it do? */}
-              <div className="p-4 rounded-xl bg-[#F3F6F1] dark:bg-[#13241C] border border-[#E3E8DE] dark:border-[#1C3328] border-l-4 border-l-teal-500 transition-all hover:shadow-xs">
-                <div className="flex items-center gap-1.5 text-teal-700 dark:text-teal-400 mb-1 font-bold text-xs font-mono uppercase tracking-wider">
-                  <Activity className="w-4 h-4 shrink-0" />
-                  <span>2. What does it do inside Mom&apos;s body?</span>
+              {/* 4 Plain-English Answer Cards */}
+              <div className="grid grid-cols-1 gap-3">
+                {/* Card 1: What is this? */}
+                <div className="p-4 rounded-xl bg-[#F4F6F2] dark:bg-[#1F1F1F] border border-[#E2E7DE] dark:border-[#272727] border-l-4 border-l-[#0E6238] dark:border-l-[#199A59]">
+                  <div className="flex items-center gap-1.5 text-[#0E6238] dark:text-[#199A59] mb-1 font-semibold text-xs font-mono uppercase tracking-wider">
+                    <FileText className="w-4 h-4 shrink-0" />
+                    <span>1. What is this report?</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-[#27272A] dark:text-[#E5E7EB] leading-relaxed">
+                    {extractedResult.extractedFacts?.plainEnglish?.whatIsThis ||
+                      "An outpatient medical document recorded for Eleanor's ongoing health care."}
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm text-[#27272A] dark:text-[#D1E0D7] leading-relaxed">
-                  {extractedResult.extractedFacts?.plainEnglish?.whatItDoes ||
-                    "Monitors vital body functions to ensure her chronic conditions remain well-managed."}
-                </p>
-              </div>
 
-              {/* Card 3: What changed from before? */}
-              <div className="p-4 rounded-xl bg-[#F3F6F1] dark:bg-[#13241C] border border-[#E3E8DE] dark:border-[#1C3328] border-l-4 border-l-amber-500 transition-all hover:shadow-xs">
-                <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400 mb-1 font-bold text-xs font-mono uppercase tracking-wider">
-                  <Clock className="w-4 h-4 shrink-0" />
-                  <span>3. What changed compared to previous records?</span>
+                {/* Card 2: What does it do? */}
+                <div className="p-4 rounded-xl bg-[#F4F6F2] dark:bg-[#1F1F1F] border border-[#E2E7DE] dark:border-[#272727] border-l-4 border-l-[#0E6238] dark:border-l-[#199A59]">
+                  <div className="flex items-center gap-1.5 text-[#0E6238] dark:text-[#199A59] mb-1 font-semibold text-xs font-mono uppercase tracking-wider">
+                    <Activity className="w-4 h-4 shrink-0" />
+                    <span>2. What does it do inside the body?</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-[#27272A] dark:text-[#E5E7EB] leading-relaxed">
+                    {extractedResult.extractedFacts?.plainEnglish?.whatItDoes ||
+                      "Monitors vital organ functions to ensure chronic conditions remain well-managed."}
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm text-[#27272A] dark:text-[#D1E0D7] leading-relaxed font-medium">
-                  {extractedResult.extractedFacts?.plainEnglish?.whatChanged ||
-                    "Cross-referenced with previous clinic notes to spot any lab shifts or medication additions."}
-                </p>
-              </div>
 
-              {/* Card 4: What should you ask Dr. Chen? */}
-              <div className="p-4 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 border-l-4 border-l-[#0D6832] transition-all hover:shadow-xs">
-                <div className="flex items-center gap-1.5 text-[#0D6832] dark:text-[#34D399] mb-1 font-bold text-xs font-mono uppercase tracking-wider">
-                  <HelpCircle className="w-4 h-4 shrink-0" />
-                  <span>4. What should you ask the doctor?</span>
+                {/* Card 3: What changed from before? */}
+                <div className="p-4 rounded-xl bg-[#F4F6F2] dark:bg-[#1F1F1F] border border-[#E2E7DE] dark:border-[#272727] border-l-4 border-l-[#D97706] dark:border-l-[#FBBF24]">
+                  <div className="flex items-center gap-1.5 text-[#D97706] dark:text-[#FBBF24] mb-1 font-semibold text-xs font-mono uppercase tracking-wider">
+                    <Clock className="w-4 h-4 shrink-0" />
+                    <span>3. What changed compared to previous records?</span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-[#27272A] dark:text-[#E5E7EB] leading-relaxed font-medium">
+                    {extractedResult.extractedFacts?.plainEnglish?.whatChanged ||
+                      "Cross-referenced with previous clinic notes to spot lab shifts or medication additions."}
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm text-[#14532D] dark:text-[#A7F3D0] leading-relaxed font-semibold">
-                  {extractedResult.extractedFacts?.plainEnglish?.actionForDoctor ||
-                    "Ask Dr. Chen whether any medication doses need adjusting based on these recent test results."}
-                </p>
-              </div>
-            </div>
 
-            {/* Safety Alert (if present) */}
-            {extractedResult.extractedFacts?.safetyAlert && (
-              <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 border-l-4 border-l-rose-600 text-xs text-rose-900 dark:text-rose-200 flex items-start gap-2.5">
-                <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
-                <span className="leading-relaxed">
-                  <strong className="font-bold">Important Safety Alert:</strong> {extractedResult.extractedFacts.safetyAlert}
-                </span>
-              </div>
-            )}
-
-            {/* Done button to return to timeline */}
-            <button
-              onClick={handleDone}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00D287] to-[#059669] hover:from-[#00b975] hover:to-[#047857] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-500/20 active:scale-98 transition-all cursor-pointer min-h-[48px]"
-            >
-              <span>See Eleanor&apos;s Updated Health Timeline</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        ) : (
-          /* Upload Form */
-          <form onSubmit={handleUploadAndAnalyze} className="space-y-4">
-            {/* Quick 1-Click Sample Test Buttons (Highlighted for easy tester review) */}
-            <div className="p-3 rounded-xl bg-emerald-50/70 dark:bg-[#13241C] border border-emerald-200 dark:border-emerald-800/80">
-              <span className="text-[10px] sm:text-[11px] font-bold text-[#0D6832] dark:text-[#34D399] uppercase tracking-wider block mb-2 font-mono">
-                — TEST INSTANTLY WITH A SAMPLE REPORT:
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                <button
-                  type="button"
-                  disabled={isProcessing}
-                  onClick={() => handleLoadSample("quest")}
-                  className="p-3 rounded-xl border border-emerald-300 dark:border-emerald-700 hover:border-emerald-600 bg-white dark:bg-[#0E1B15] hover:bg-emerald-50 dark:hover:bg-[#182C22] text-left text-[#0A0F0D] dark:text-[#F4FBF7] transition-all flex items-center gap-2.5 cursor-pointer shadow-xs active:scale-98 min-h-[44px]"
-                >
-                  <FileText className="w-4 h-4 text-[#0D6832] dark:text-[#34D399] shrink-0" />
-                  <div className="truncate">
-                    <span className="font-bold block truncate">Quest Lab Report (PDF)</span>
-                    <span className="text-[10px] text-[#71717A] dark:text-[#8FA698]">Kidney Filtration &amp; Blood Panel</span>
+                {/* Card 4: What should you ask Dr. Chen? */}
+                <div className="p-4 rounded-xl bg-[#EBF7F0] dark:bg-[#1F1F1F] border border-[#CBD3C6] dark:border-[#313131] border-l-4 border-l-[#0E6238] dark:border-l-[#199A59]">
+                  <div className="flex items-center gap-1.5 text-[#0E6238] dark:text-[#199A59] mb-1 font-semibold text-xs font-mono uppercase tracking-wider">
+                    <HelpCircle className="w-4 h-4 shrink-0" />
+                    <span>4. What should you ask the doctor?</span>
                   </div>
-                </button>
-                <button
-                  type="button"
-                  disabled={isProcessing}
-                  onClick={() => handleLoadSample("meloxicam")}
-                  className="p-3 rounded-xl border border-amber-300 dark:border-amber-700 hover:border-amber-500 bg-white dark:bg-[#0E1B15] hover:bg-amber-50/50 dark:hover:bg-[#182C22] text-left text-[#0A0F0D] dark:text-[#F4FBF7] transition-all flex items-center gap-2.5 cursor-pointer shadow-xs active:scale-98 min-h-[44px]"
-                >
-                  <FileText className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                  <div className="truncate">
-                    <span className="font-bold block truncate">Urgent Care Note (PDF)</span>
-                    <span className="text-[10px] text-[#71717A] dark:text-[#8FA698]">Knee Pain &amp; Meloxicam Rx</span>
-                  </div>
-                </button>
-              </div>
-            </div>
-
-            {/* Drag & Drop File Zone */}
-            <div
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-              className={`p-5 sm:p-6 rounded-2xl border-2 border-dashed cursor-pointer text-center transition-all ${
-                isDragging
-                  ? "border-[#0D6832] bg-emerald-50 dark:bg-emerald-950/40 scale-[1.01]"
-                  : selectedFile
-                  ? "border-[#0D6832]/60 bg-emerald-50/40 dark:bg-[#13241C]"
-                  : "border-[#CBD5C8] dark:border-[#274737] hover:border-[#0D6832] bg-[#FAFBF8] dark:bg-[#13241C]/50 hover:bg-[#F3F6F1] dark:hover:bg-[#13241C]"
-              }`}
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf,.png,.jpg,.jpeg,.txt,.doc,.docx"
-                onChange={handleFileChange}
-                className="hidden"
-              />
-
-              {selectedFile ? (
-                <div className="flex items-center justify-between p-3.5 rounded-xl bg-white dark:bg-[#0E1B15] border border-[#E3E8DE] dark:border-[#1C3328] text-left shadow-xs">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 rounded-lg bg-emerald-100 dark:bg-emerald-950 text-[#0D6832] dark:text-[#34D399]">
-                      <FileCheck2 className="w-5 h-5 sm:w-6 sm:h-6" />
-                    </div>
-                    <div>
-                      <span className="text-xs font-bold text-[#0A0F0D] dark:text-[#F4FBF7] block truncate max-w-[200px] sm:max-w-xs">
-                        {selectedFile.name}
-                      </span>
-                      <span className="text-[11px] text-[#71717A] dark:text-[#8FA698]">
-                        {Math.round(selectedFile.size / 1024 || 1)} KB • Ready to extract &amp; explain
-                      </span>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedFile(null);
-                    }}
-                    className="p-2 text-[#71717A] hover:text-rose-600 rounded-lg hover:bg-[#F3F6F1] dark:hover:bg-[#182C22] transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <p className="text-xs sm:text-sm text-[#0E6238] dark:text-[#199A59] leading-relaxed font-semibold">
+                    {extractedResult.extractedFacts?.plainEnglish?.actionForDoctor ||
+                      "Ask Dr. Chen whether medication doses need adjusting based on these recent test results."}
+                  </p>
                 </div>
-              ) : (
-                <div className="space-y-2 py-3 sm:py-4">
-                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-[#0D6832] dark:text-[#34D399] mx-auto flex items-center justify-center">
-                    <FileUp className="w-5 h-5 sm:w-6 sm:h-6" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold text-[#0A0F0D] dark:text-white block">
-                      Tap to browse files or drag &amp; drop a medical PDF here
-                    </span>
-                    <span className="text-[11px] text-[#71717A] dark:text-[#8FA698] block mt-0.5">
-                      PDF, scans, lab printouts, or phone photos (up to 25 MB)
-                    </span>
-                  </div>
+              </div>
+
+              {/* Safety Alert (if present) */}
+              {extractedResult.extractedFacts?.safetyAlert && (
+                <div className="p-3.5 rounded-xl bg-[#FFF1F2] dark:bg-[#1F1F1F] border border-[#FECDD3] dark:border-[#313131] border-l-4 border-l-[#BE123C] text-xs text-[#BE123C] dark:text-[#FB7185] flex items-start gap-2.5">
+                  <AlertTriangle className="w-4 h-4 text-[#BE123C] dark:text-[#FB7185] shrink-0 mt-0.5" />
+                  <span className="leading-relaxed">
+                    <strong>Important safety alert:</strong> {extractedResult.extractedFacts.safetyAlert}
+                  </span>
                 </div>
               )}
-            </div>
 
-            {/* Document Details (Responsive 1-col on mobile, 2-col on tablet/desktop) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-              <div>
-                <label className="text-xs font-bold text-[#27272A] dark:text-[#D1E0D7] block mb-1">
-                  Document Type
-                </label>
-                <select
-                  value={docType}
-                  onChange={(e: any) => setDocType(e.target.value)}
-                  className="w-full rounded-xl bg-[#F3F6F1] dark:bg-[#13241C] border border-[#CBD5C8] dark:border-[#274737] p-2.5 text-xs text-[#0A0F0D] dark:text-[#F4FBF7] focus:outline-none focus:border-[#0D6832] min-h-[42px]"
-                >
-                  <option value="lab">Lab Blood / Urine Test (Quest / Labcorp)</option>
-                  <option value="medication">Urgent Care / Prescription Note</option>
-                  <option value="consult">Doctor Consultation / EHR Summary</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-[#27272A] dark:text-[#D1E0D7] block mb-1">
-                  Clinic or Lab Name
-                </label>
-                <input
-                  type="text"
-                  value={facility}
-                  onChange={(e) => setFacility(e.target.value)}
-                  className="w-full rounded-xl bg-[#F3F6F1] dark:bg-[#13241C] border border-[#CBD5C8] dark:border-[#274737] p-2.5 text-xs text-[#0A0F0D] dark:text-[#F4FBF7] focus:outline-none focus:border-[#0D6832] min-h-[42px]"
-                  placeholder="e.g. Quest Diagnostics"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Action Button */}
-            <div className="pt-2">
+              {/* Done button to return to timeline */}
               <button
-                type="submit"
-                disabled={!selectedFile || isProcessing}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#00D287] to-[#059669] hover:from-[#00b975] hover:to-[#047857] text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-emerald-500/20 transition-all disabled:opacity-40 cursor-pointer min-h-[46px]"
+                type="button"
+                onClick={handleDone}
+                className="w-full py-3 rounded-xl bg-[#0E6238] hover:bg-[#0B4E2D] dark:bg-[#199A59] dark:hover:bg-[#22B56C] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98] focus-ring cursor-pointer min-h-[44px]"
               >
-                {isProcessing ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span className="truncate">{extractionStep}</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4" />
-                    <span>Explain This Medical Report In Plain English</span>
-                  </>
-                )}
+                <span>View updated health timeline</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
-          </form>
-        )}
+          ) : (
+            /* Upload Form */
+            <form onSubmit={handleUploadAndAnalyze} className="space-y-4">
+              {/* Quick Sample Buttons */}
+              <div className="p-3.5 rounded-xl bg-[#F4F6F2] dark:bg-[#1F1F1F] border border-[#E2E7DE] dark:border-[#272727]">
+                <span className="text-xs font-semibold text-[#0E6238] dark:text-[#199A59] uppercase tracking-wider block mb-2 font-mono">
+                  Test instantly with a sample report:
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <button
+                    type="button"
+                    disabled={isProcessing}
+                    onClick={() => handleLoadSample("quest")}
+                    className="p-3 rounded-xl border border-[#CBD3C6] dark:border-[#272727] hover:border-[#0E6238] dark:hover:border-[#199A59] bg-white dark:bg-[#181818] text-left text-[#0A0F0D] dark:text-[#FFFFFF] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] flex items-center gap-2.5 cursor-pointer shadow-xs active:scale-[0.98] min-h-[44px]"
+                  >
+                    <FileText className="w-4 h-4 text-[#0E6238] dark:text-[#199A59] shrink-0" />
+                    <div className="truncate">
+                      <span className="font-semibold block truncate">Quest lab report (PDF)</span>
+                      <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">Kidney filtration &amp; panel</span>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isProcessing}
+                    onClick={() => handleLoadSample("meloxicam")}
+                    className="p-3 rounded-xl border border-[#CBD3C6] dark:border-[#272727] hover:border-[#D97706] dark:hover:border-[#FBBF24] bg-white dark:bg-[#181818] text-left text-[#0A0F0D] dark:text-[#FFFFFF] transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] flex items-center gap-2.5 cursor-pointer shadow-xs active:scale-[0.98] min-h-[44px]"
+                  >
+                    <FileText className="w-4 h-4 text-[#D97706] dark:text-[#FBBF24] shrink-0" />
+                    <div className="truncate">
+                      <span className="font-semibold block truncate">Urgent care note (PDF)</span>
+                      <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">Knee pain &amp; Meloxicam Rx</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Drag & Drop File Zone */}
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+                className={`p-5 sm:p-6 rounded-2xl border-2 border-dashed cursor-pointer text-center transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+                  isDragging
+                    ? "border-[#0E6238] bg-[#EBF7F0] dark:bg-[#1F1F1F]"
+                    : selectedFile
+                    ? "border-[#0E6238] bg-[#EBF7F0]/40 dark:bg-[#1F1F1F]"
+                    : "border-[#CBD3C6] dark:border-[#272727] hover:border-[#0E6238] dark:hover:border-[#199A59] bg-[#F4F6F2] dark:bg-[#1F1F1F]"
+                }`}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.png,.jpg,.jpeg,.txt,.doc,.docx"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+
+                {selectedFile ? (
+                  <div className="flex items-center justify-between p-3.5 rounded-xl bg-white dark:bg-[#181818] border border-[#E2E7DE] dark:border-[#272727] text-left shadow-xs">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 rounded-lg bg-[#EBF7F0] dark:bg-[#1F1F1F] text-[#0E6238] dark:text-[#199A59]">
+                        <FileCheck2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-semibold text-[#0A0F0D] dark:text-[#FFFFFF] block truncate max-w-[200px] sm:max-w-xs">
+                          {selectedFile.name}
+                        </span>
+                        <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] tabular-nums">
+                          {Math.round(selectedFile.size / 1024 || 1)} KB • Ready to explain
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedFile(null);
+                      }}
+                      className="p-2 text-[#6B7280] hover:text-[#BE123C] rounded-lg hover:bg-[#FFF1F2] dark:hover:bg-[#1F1F1F] transition-colors"
+                      aria-label="Remove selected file"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2 py-3 sm:py-4">
+                    <div className="w-12 h-12 rounded-2xl bg-[#EBF7F0] dark:bg-[#1F1F1F] border border-[#CBD3C6] dark:border-[#272727] text-[#0E6238] dark:text-[#199A59] mx-auto flex items-center justify-center">
+                      <FileUp className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <span className="text-xs font-semibold text-[#0A0F0D] dark:text-[#FFFFFF] block">
+                        Browse files or drag and drop a medical PDF here
+                      </span>
+                      <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] block mt-0.5">
+                        PDF, scans, lab printouts, or phone photos (up to 25 MB)
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Document Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <div>
+                  <label className="text-xs font-semibold text-[#27272A] dark:text-[#E5E7EB] block mb-1">
+                    Document type
+                  </label>
+                  <select
+                    value={docType}
+                    onChange={(e: any) => setDocType(e.target.value)}
+                    className="w-full rounded-xl bg-[#F4F6F2] dark:bg-[#1F1F1F] border border-[#CBD3C6] dark:border-[#272727] p-2.5 text-xs text-[#0A0F0D] dark:text-[#FFFFFF] focus-ring min-h-[42px]"
+                  >
+                    <option value="lab">Lab blood / urine test (Quest / Labcorp)</option>
+                    <option value="medication">Urgent care / prescription note</option>
+                    <option value="consult">Doctor consultation / EHR summary</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-[#27272A] dark:text-[#E5E7EB] block mb-1">
+                    Clinic or facility name
+                  </label>
+                  <input
+                    type="text"
+                    value={facility}
+                    onChange={(e) => setFacility(e.target.value)}
+                    className="w-full rounded-xl bg-[#F4F6F2] dark:bg-[#1F1F1F] border border-[#CBD3C6] dark:border-[#272727] p-2.5 text-xs text-[#0A0F0D] dark:text-[#FFFFFF] focus-ring min-h-[42px]"
+                    placeholder="e.g. Quest Diagnostics"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Action Button */}
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={!selectedFile || isProcessing}
+                  className="w-full py-3 rounded-xl bg-[#0E6238] hover:bg-[#0B4E2D] dark:bg-[#199A59] dark:hover:bg-[#22B56C] text-white font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xs transition-all duration-700 ease-[cubic-bezier(0.32,0.72,0,1)] disabled:opacity-40 focus-ring cursor-pointer min-h-[44px]"
+                >
+                  {isProcessing ? (
+                    <span className="truncate">{extractionStep}</span>
+                  ) : (
+                    <>
+                      <FileText className="w-4 h-4" />
+                      <span>Explain this medical report in plain English</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </div>,

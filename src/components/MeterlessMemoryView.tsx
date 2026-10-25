@@ -15,27 +15,27 @@ export function MeterlessMemoryView() {
   }, []);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-teal-100 dark:bg-teal-950 text-teal-800 dark:text-teal-300 border border-teal-200 dark:border-teal-800 font-semibold flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-              Meterless H-MEM Longitudinal Memory
+            <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#EBF7F0] dark:bg-[#1F1F1F] text-[#0E6238] dark:text-[#199A59] border border-[#CBD3C6] dark:border-[#313131] font-semibold flex items-center gap-1.5 font-mono">
+              <Activity className="w-3.5 h-3.5" />
+              Meterless longitudinal memory
             </span>
-            <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">Patient State Model</span>
+            <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] font-mono">Patient state model</span>
           </div>
-          <h3 className="text-base font-bold text-slate-900 dark:text-white">Hierarchical Patient State &amp; Trust Ledger</h3>
-          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 max-w-2xl">
-            Meterless organizes Eleanor&apos;s longitudinal health into 3 distinct memory layers (Long-Term Semantic, Short-Term Episodic, and Working Memory) while logging immutable audit events to the Trust Ledger.
+          <h3 className="text-base font-bold text-[#0A0F0D] dark:text-[#FFFFFF]">Hierarchical patient state and trust ledger</h3>
+          <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mt-1 max-w-2xl leading-relaxed text-pretty">
+            Organizes longitudinal health into 3 distinct memory layers (Long-term semantic, Short-term episodic, and Working memory) while logging audit events to the trust ledger.
           </p>
         </div>
 
-        <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs">
-          <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider block">Total Active Nodes</span>
-          <span className="text-teal-700 dark:text-teal-400 font-mono text-base font-bold">
-            {worldModel?.totalMemories || 5} Memory Records
+        <div className="p-3 rounded-xl bg-[#F4F6F2] dark:bg-[#1F1F1F] border border-[#E2E7DE] dark:border-[#272727] text-xs">
+          <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] uppercase tracking-wider block font-mono">Total active nodes</span>
+          <span className="text-[#0E6238] dark:text-[#199A59] font-mono text-sm font-bold tabular-nums">
+            {worldModel?.totalMemories || 5} memory records
           </span>
         </div>
       </div>
@@ -43,32 +43,32 @@ export function MeterlessMemoryView() {
       {/* 3-Tier Memory Layer Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Tier 1: Long-Term Semantic */}
-        <div className="bg-white dark:bg-[#0F1A2E] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 border-t-4 border-t-sky-500 shadow-sm flex flex-col justify-between transition-colors">
+        <div className="medical-card p-5 border-t-4 border-t-[#0E6238] dark:border-t-[#199A59] flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-sky-800 dark:text-sky-400 flex items-center gap-1.5">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#0E6238] dark:text-[#199A59] flex items-center gap-1.5 font-mono">
                 <Layers className="w-4 h-4" />
-                Long-Term Semantic
+                Long-term semantic
               </h4>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
-                Permanent Facts
+              <span className="text-xs px-2 py-0.5 rounded bg-[#F4F6F2] dark:bg-[#1F1F1F] text-[#6B7280] dark:text-[#9CA3AF] font-medium">
+                Permanent facts
               </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3.5">
-              Baseline chronic conditions, permanent diagnoses, baseline organ function, and standing medical history.
+            <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mb-3.5">
+              Baseline chronic conditions, permanent diagnoses, baseline organ function, and medical history.
             </p>
 
             <div className="space-y-2.5">
               {worldModel?.layers.longTerm.map((mem) => (
-                <div key={mem.id} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-xs">
-                  <div className="flex items-center justify-between text-[10px] text-sky-700 dark:text-sky-400 font-mono mb-1 font-semibold">
+                <div key={mem.id} className="p-3 rounded-xl bg-[#F4F6F2] dark:bg-[#1F1F1F] border border-[#E2E7DE] dark:border-[#272727] text-xs">
+                  <div className="flex items-center justify-between text-xs text-[#0E6238] dark:text-[#199A59] font-mono mb-1 font-semibold">
                     <span>{mem.id}</span>
-                    <span className="text-slate-500 dark:text-slate-400">Confidence: {(mem.confidence * 100).toFixed(0)}%</span>
+                    <span className="text-[#6B7280] dark:text-[#9CA3AF] tabular-nums">Confidence: {(mem.confidence * 100).toFixed(0)}%</span>
                   </div>
-                  <p className="text-slate-800 dark:text-slate-200 leading-relaxed font-sans">{mem.content}</p>
-                  <div className="mt-2 text-[10px] text-slate-500 flex flex-wrap gap-1">
+                  <p className="text-[#27272A] dark:text-[#E5E7EB] leading-relaxed">{mem.content}</p>
+                  <div className="mt-2 text-xs text-[#6B7280] flex flex-wrap gap-1">
                     {mem.tags.map((t) => (
-                      <span key={t} className="px-1.5 py-0.5 rounded bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono">
+                      <span key={t} className="px-1.5 py-0.5 rounded bg-white dark:bg-[#181818] text-[#6B7280] dark:text-[#9CA3AF] font-mono border border-[#CBD3C6] dark:border-[#313131]">
                         #{t}
                       </span>
                     ))}
@@ -80,32 +80,32 @@ export function MeterlessMemoryView() {
         </div>
 
         {/* Tier 2: Short-Term Episodic */}
-        <div className="bg-white dark:bg-[#0F1A2E] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 border-t-4 border-t-teal-500 shadow-sm flex flex-col justify-between transition-colors">
+        <div className="medical-card p-5 border-t-4 border-t-[#D97706] dark:border-t-[#FBBF24] flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-teal-800 dark:text-teal-400 flex items-center gap-1.5">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#D97706] dark:text-[#FBBF24] flex items-center gap-1.5 font-mono">
                 <FileText className="w-4 h-4" />
-                Short-Term Episodic
+                Short-term episodic
               </h4>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium">
-                Recent Encounters
+              <span className="text-xs px-2 py-0.5 rounded bg-[#F4F6F2] dark:bg-[#1F1F1F] text-[#6B7280] dark:text-[#9CA3AF] font-medium">
+                Recent encounters
               </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3.5">
+            <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mb-3.5">
               Recent acute clinical encounters, new medication initiations, and time-stamped laboratory shifts.
             </p>
 
             <div className="space-y-2.5">
               {worldModel?.layers.shortTerm.map((mem) => (
-                <div key={mem.id} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 text-xs">
-                  <div className="flex items-center justify-between text-[10px] text-teal-700 dark:text-teal-400 font-mono mb-1 font-semibold">
+                <div key={mem.id} className="p-3 rounded-xl bg-[#F4F6F2] dark:bg-[#1F1F1F] border border-[#E2E7DE] dark:border-[#272727] text-xs">
+                  <div className="flex items-center justify-between text-xs text-[#D97706] dark:text-[#FBBF24] font-mono mb-1 font-semibold">
                     <span>{mem.id}</span>
-                    <span className="text-slate-500 dark:text-slate-400">Provenance: {mem.provenance.label}</span>
+                    <span className="text-[#6B7280] dark:text-[#9CA3AF]">{mem.provenance.label}</span>
                   </div>
-                  <p className="text-slate-800 dark:text-slate-200 leading-relaxed font-sans">{mem.content}</p>
-                  <div className="mt-2 text-[10px] text-slate-500 flex flex-wrap gap-1">
+                  <p className="text-[#27272A] dark:text-[#E5E7EB] leading-relaxed">{mem.content}</p>
+                  <div className="mt-2 text-xs text-[#6B7280] flex flex-wrap gap-1">
                     {mem.tags.map((t) => (
-                      <span key={t} className="px-1.5 py-0.5 rounded bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono">
+                      <span key={t} className="px-1.5 py-0.5 rounded bg-white dark:bg-[#181818] text-[#6B7280] dark:text-[#9CA3AF] font-mono border border-[#CBD3C6] dark:border-[#313131]">
                         #{t}
                       </span>
                     ))}
@@ -116,33 +116,33 @@ export function MeterlessMemoryView() {
           </div>
         </div>
 
-        {/* Tier 3: Working Memory & Conflict Detection */}
-        <div className="bg-white dark:bg-[#0F1A2E] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 border-t-4 border-t-rose-500 shadow-sm flex flex-col justify-between transition-colors">
+        {/* Tier 3: Working Memory (Conflicts) */}
+        <div className="medical-card p-5 border-t-4 border-t-[#BE123C] dark:border-t-[#FB7185] flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-2">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-rose-700 dark:text-rose-400 flex items-center gap-1.5">
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-[#BE123C] dark:text-[#FB7185] flex items-center gap-1.5 font-mono">
                 <ShieldCheck className="w-4 h-4" />
-                Working Memory (Conflicts)
+                Working memory (conflicts)
               </h4>
-              <span className="text-[10px] px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800 font-semibold">
-                Active Conflict
+              <span className="text-xs px-2 py-0.5 rounded bg-[#FFF1F2] dark:bg-[#1F1F1F] text-[#BE123C] dark:text-[#FB7185] border border-[#FECDD3] dark:border-[#313131] font-semibold">
+                Active clash
               </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-3.5">
-              Real-time scratchpad where Nemotron executes conflict detection across active prescriptions and organ function.
+            <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF] mb-3.5">
+              Active scratchpad where surveillance executes conflict checks across prescriptions and organ function.
             </p>
 
             <div className="space-y-2.5">
               {worldModel?.layers.working.map((mem) => (
-                <div key={mem.id} className="p-3.5 rounded-xl bg-rose-50/80 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/60 text-xs">
-                  <div className="flex items-center justify-between text-[10px] text-rose-700 dark:text-rose-400 font-mono mb-1 font-bold">
+                <div key={mem.id} className="p-3.5 rounded-xl bg-[#FFF1F2] dark:bg-[#1F1F1F] border border-[#FECDD3] dark:border-[#313131] text-xs">
+                  <div className="flex items-center justify-between text-xs text-[#BE123C] dark:text-[#FB7185] font-mono mb-1 font-bold">
                     <span>{mem.id}</span>
-                    <span>ALERT: CRITICAL</span>
+                    <span>Alert: Critical</span>
                   </div>
-                  <p className="text-slate-800 dark:text-slate-200 leading-relaxed font-sans">{mem.content}</p>
-                  <div className="mt-2 text-[10px] text-rose-700 dark:text-rose-300 flex flex-wrap gap-1">
+                  <p className="text-[#27272A] dark:text-[#E5E7EB] leading-relaxed">{mem.content}</p>
+                  <div className="mt-2 text-xs text-[#BE123C] dark:text-[#FB7185] flex flex-wrap gap-1">
                     {mem.tags.map((t) => (
-                      <span key={t} className="px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-300 font-mono border border-rose-200 dark:border-rose-800/50">
+                      <span key={t} className="px-1.5 py-0.5 rounded bg-white dark:bg-[#181818] font-mono border border-[#FECDD3] dark:border-[#313131]">
                         #{t}
                       </span>
                     ))}
@@ -154,54 +154,54 @@ export function MeterlessMemoryView() {
         </div>
       </div>
 
-      {/* Meterless Trust Ledger (Audit Trail) */}
-      <div className="bg-white dark:bg-[#0F1A2E] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+      {/* Meterless Trust Ledger */}
+      <div className="medical-card p-5">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              Meterless Trust Ledger (Tamper-Proof Audit Trail)
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-[#0A0F0D] dark:text-[#FFFFFF] flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-[#0E6238] dark:text-[#199A59]" />
+              Meterless trust ledger (audit trail)
             </h4>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Cryptographic audit events recorded in accordance with Meterless AGENTS.md Section 9.1
+            <p className="text-xs text-[#6B7280] dark:text-[#9CA3AF]">
+              Cryptographic audit events recorded in accordance with health safety governance
             </p>
           </div>
-          <span className="text-xs text-emerald-800 dark:text-emerald-300 font-mono font-semibold px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800">
-            AUDIT ACTIVE
+          <span className="text-xs text-[#0E6238] dark:text-[#199A59] font-mono font-semibold px-2.5 py-1 rounded-lg bg-[#EBF7F0] dark:bg-[#1F1F1F] border border-[#CBD3C6] dark:border-[#313131]">
+            Audit verified
           </span>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="overflow-x-auto rounded-xl border border-[#E2E7DE] dark:border-[#272727]">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-100 dark:bg-slate-900/90 text-slate-700 dark:text-slate-300 border-b border-slate-200 dark:border-slate-800 uppercase text-[10px] tracking-wider">
+            <thead className="bg-[#F4F6F2] dark:bg-[#1F1F1F] text-[#27272A] dark:text-[#E5E7EB] border-b border-[#E2E7DE] dark:border-[#272727] uppercase text-xs tracking-wider">
               <tr>
                 <th className="p-3 font-semibold">Action</th>
-                <th className="p-3 font-semibold">Memory Record ID</th>
+                <th className="p-3 font-semibold">Memory record ID</th>
                 <th className="p-3 font-semibold">Actor</th>
                 <th className="p-3 font-semibold">Timestamp</th>
-                <th className="p-3 font-semibold">Details / Justification</th>
+                <th className="p-3 font-semibold">Details and justification</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200 dark:divide-slate-800 bg-white dark:bg-slate-950/40">
+            <tbody className="divide-y divide-[#E2E7DE] dark:divide-[#272727] bg-white dark:bg-[#181818]">
               {worldModel?.auditTrail.map((entry, idx) => (
-                <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors">
+                <tr key={idx} className="hover:bg-[#F4F6F2]/50 dark:hover:bg-[#1F1F1F]/40 transition-colors">
                   <td className="p-3">
                     <span
-                      className={`px-2 py-0.5 rounded font-mono text-[10px] font-bold ${
+                      className={`px-2 py-0.5 rounded font-mono text-xs font-semibold ${
                         entry.action === "conflict_detected"
-                          ? "bg-rose-100 dark:bg-rose-950 text-rose-800 dark:text-rose-400 border border-rose-200 dark:border-rose-800"
-                          : "bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-300 border border-sky-200 dark:border-sky-800"
+                          ? "bg-[#FFF1F2] dark:bg-[#1F1F1F] text-[#BE123C] dark:text-[#FB7185] border border-[#FECDD3] dark:border-[#313131]"
+                          : "bg-[#EBF7F0] dark:bg-[#1F1F1F] text-[#0E6238] dark:text-[#199A59] border border-[#CBD3C6] dark:border-[#313131]"
                       }`}
                     >
                       {entry.action}
                     </span>
                   </td>
-                  <td className="p-3 font-mono text-slate-600 dark:text-slate-300 text-[11px]">{entry.memoryId}</td>
-                  <td className="p-3 font-bold text-slate-900 dark:text-white">{entry.actor}</td>
-                  <td className="p-3 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+                  <td className="p-3 font-mono text-[#6B7280] dark:text-[#9CA3AF] text-xs">{entry.memoryId}</td>
+                  <td className="p-3 font-semibold text-[#0A0F0D] dark:text-[#FFFFFF]">{entry.actor}</td>
+                  <td className="p-3 text-[#6B7280] dark:text-[#9CA3AF] font-mono text-xs tabular-nums">
                     {new Date(entry.timestamp).toLocaleTimeString()}
                   </td>
-                  <td className="p-3 text-slate-700 dark:text-slate-300 text-[11px]">
+                  <td className="p-3 text-[#27272A] dark:text-[#E5E7EB] text-xs">
                     {entry.details?.reason ? String(entry.details.reason) : JSON.stringify(entry.details || {})}
                   </td>
                 </tr>

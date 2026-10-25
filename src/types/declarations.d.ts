@@ -17,6 +17,10 @@ declare module 'lucide-react' {
   export const Layers: IconType;
   export const ShieldCheck: IconType;
   export const ArrowRight: IconType;
+  export const ArrowLeft: IconType;
+  export const ChevronLeft: IconType;
+  export const ChevronRight: IconType;
+  export const Search: IconType;
   export const AlertTriangle: IconType;
   export const Clock: IconType;
   export const ChevronDown: IconType;
