@@ -45,13 +45,20 @@ export function DocumentIntakeModal({
     setMounted(true);
     if (isOpen) {
       document.body.style.overflow = "hidden";
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          onClose();
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        document.body.style.overflow = "";
+        window.removeEventListener("keydown", handleKeyDown);
+      };
     } else {
       document.body.style.overflow = "";
     }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   if (!isOpen || !mounted) return null;
 
@@ -240,12 +247,23 @@ export function DocumentIntakeModal({
   };
 
   return createPortal(
-    <div className="fixed inset-0 z-[99999] overflow-hidden bg-black/80 backdrop-blur-xl p-3 sm:p-6 flex items-center justify-center no-print animate-in fade-in duration-200">
-      {/* Background click overlay */}
-      <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
+    <div
+      className="fixed inset-0 z-[99999] overflow-hidden bg-black/80 backdrop-blur-2xl p-3 sm:p-6 flex items-center justify-center no-print animate-in fade-in duration-200"
+      style={{
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
+      }}
+    >
+      {/* Background click overlay to blur out page and capture clicks */}
+      <div
+        className="fixed inset-0 bg-transparent cursor-pointer"
+        onClick={onClose}
+        aria-hidden="true"
+        title="Click background to close"
+      />
 
-      {/* Modal Dialog Card (Strictly centered, responsive, max-w-xl, contained) */}
-      <div className="relative w-full max-w-xl mx-auto my-auto bg-white dark:bg-[#0E1B15] border-2 border-[#CBD5C8] dark:border-[#274737] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh] z-10 animate-in zoom-in-95 duration-150">
+      {/* Modal Dialog Card (Strictly centered, responsive, max-w-xl, contained, never clipped under header) */}
+      <div className="relative w-full max-w-xl mx-auto my-auto bg-white dark:bg-[#0E1B15] border-2 border-[#CBD5C8] dark:border-[#274737] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[88vh] sm:max-h-[85vh] z-10 animate-in zoom-in-95 duration-150">
         {/* Pinned Modal Header (Never hidden under header cards or offscreen) */}
         <div className="shrink-0 p-4 sm:p-5 border-b border-[#E3E8DE] dark:border-[#1C3328] bg-white dark:bg-[#0E1B15] flex items-start justify-between gap-3">
           <div className="pr-2">
