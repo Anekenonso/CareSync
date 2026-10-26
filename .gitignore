@@ -60,6 +60,8 @@ Thumbs.db
 
 # Pitch, video toolkit & presentation materials (NEVER COMMIT MARKETING/PROMOTION)
 docs/SLIDE_DECK.md
+*pitch-deck*
+pitch-deck.html
 claude-code-video-toolkit/
 videos/
 video/
