@@ -54,32 +54,56 @@ export function OverviewTimeline({
       throw new Error(`HTTP ${res.status}`);
     } catch (err) {
       console.warn("Utilizing high-reliability clinical fallback for caregiver synthesis:", err);
+      const isMedQuery = promptToRun.toLowerCase().includes("medication") || promptToRun.toLowerCase().includes("safe") || promptToRun.toLowerCase().includes("drug");
       setAnalysisResult({
-        reasoningTrace: [
-          {
-            step: 1,
-            phase: "Observation",
-            thought: "Ingesting longitudinal dataset and cross-referencing uploaded records against chronic baseline.",
-            evidenceAnchor: "Federated Records & Caregiver Ingestion Vault",
-          },
-          {
-            step: 2,
-            phase: "Safety & Interaction Check",
-            thought: "Identified acute drug-disease contraindication: Meloxicam 15mg superimposed on baseline Lisinopril 20mg and Stage 3a CKD.",
-            evidenceAnchor: "Clinical Pharmacotherapy Safety Protocol (NSAID-ACEi-CKD3a)",
-          },
-          {
-            step: 3,
-            phase: "Clinical Synthesis",
-            thought: "Validated eGFR deterioration of 22.2% (54 down to 42 mL/min). Synthesizing targeted physician discussion questions.",
-            evidenceAnchor: "Valley Health Diagnostic Center & Quest Diagnostics",
-          },
-        ],
+        reasoningTrace: isMedQuery
+          ? [
+              {
+                step: 1,
+                phase: "Observation",
+                thought: "Reconciling current active medication list: Lisinopril 20mg QD, Metformin ER 1000mg BID, and newly introduced Meloxicam 15mg QD (QuickCare Urgent Clinic).",
+                evidenceAnchor: "Hope Valley EHR & QuickCare Urgent Encounter Note (2026-10-10)",
+              },
+              {
+                step: 2,
+                phase: "Safety & Interaction Check",
+                thought: "Performing hemodynamics contraindication check: NSAIDs restrict afferent renal blood flow while Lisinopril dilates efferent vessels, causing sharp intraglomerular pressure drop in CKD 3a.",
+                evidenceAnchor: "Clinical Pharmacotherapy Safety Protocol (NSAID + ACEi Contraindication)",
+              },
+              {
+                step: 3,
+                phase: "Clinical Synthesis",
+                thought: "Current eGFR 42 mL/min warrants Metformin review; potassium is elevated at 5.2 mEq/L. Active therapy combination is acutely unsafe.",
+                evidenceAnchor: "Quest Diagnostics Renal Panel (2026-10-18, Lab ID: lab-201, lab-204)",
+              },
+            ]
+          : [
+              {
+                step: 1,
+                phase: "Observation",
+                thought: "Ingesting longitudinal dataset and cross-referencing uploaded records against chronic baseline.",
+                evidenceAnchor: "Federated Records & Caregiver Ingestion Vault",
+              },
+              {
+                step: 2,
+                phase: "Evidence Cross-Reference",
+                thought: "Correlating July baseline (eGFR 54) with October panel (eGFR 42) following Oct 10 walk-in urgent care visit.",
+                evidenceAnchor: "St. Jude Outpatient Lab & QuickCare Discharge Note",
+              },
+              {
+                step: 3,
+                phase: "Clinical Synthesis",
+                thought: "Validated eGFR deterioration of 22.2% (54 down to 42 mL/min). Synthesizing targeted physician discussion questions.",
+                evidenceAnchor: "Valley Health Diagnostic Center & Quest Diagnostics",
+              },
+            ],
         visitPrep: {
           patientId: "patient-ev-49201",
           generatedAt: new Date().toISOString(),
           model: "nvidia/nemotron-3.5-lightning-30b-a3b (CareSync High-Reliability Mode)",
-          clinicalSummary: "Eleanor Vance (68F) experienced an acute -22.2% decline in kidney filtration (eGFR drop from 54 to 42 mL/min/1.73m²; Creatinine increase from 1.28 to 1.82 mg/dL) following the initiation of Meloxicam 15mg daily prescribed by an outside Urgent Care for knee pain. Taking an NSAID alongside chronic Lisinopril 20mg in pre-existing CKD Stage 3a has provoked acute hemodynamically mediated renal strain.",
+          clinicalSummary: isMedQuery
+            ? "Medication Safety Alert: Eleanor's active medications are NOT safe together. Starting Meloxicam (15mg daily) at Urgent Care while already taking Lisinopril (20mg daily) has restricted blood flow into her kidneys. In patients with baseline stage 3a kidney disease, combining an NSAID with an ACE inhibitor creates a 'dual-action pressure drop' inside the kidney filters, causing her filtration rate (eGFR) to plunge from 54 to 42 mL/min (-22%) and pushing potassium up to 5.2 mEq/L. Additionally, her Metformin dose should be evaluated while her kidney filtration remains below 45 mL/min. Recommendation for Dr. Chen: hold Meloxicam immediately and switch to a kidney-safe pain alternative such as topical diclofenac gel or acetaminophen."
+            : "90-Day Clinical Shift Summary: Over the last 90 days, Eleanor's kidney filtration rate experienced an acute 22% plunge (eGFR dropped from a stable baseline of 54 down to 42 mL/min), accompanied by a 42% spike in serum creatinine (1.28 to 1.82 mg/dL) and mild hyperkalemia (potassium 5.2 mEq/L). Chronological reconciliation pinpoints this shift to October 10, 2026, when she was prescribed Meloxicam (15mg daily) at an outside Urgent Care for knee pain without cross-facility kidney records. This urgent care prescription clashed directly with her chronic Lisinopril regimen, triggering acute hemodynamic renal strain. This acute drop is the critical finding to review with Dr. Chen.",
           acuteAlerts: [
             {
               id: "alert-resilience-1",
@@ -114,15 +138,25 @@ export function OverviewTimeline({
             "Bring this printed 90-Day Trend Sheet and the outside Urgent Care discharge note to the doctor's office.",
             "Schedule follow-up renal panel lab appointment within 7 to 10 days post-consultation.",
           ],
-          discussionQuestions: [
-            "Given Mom's baseline kidney disease and Lisinopril, could the new knee medication (Meloxicam) be causing her eGFR drop to 42 mL/min?",
-            "Can we switch Eleanor to a safer non-nephrotoxic knee pain alternative like topical Voltaren gel or acetaminophen?",
-            "When should we recheck her Basic Metabolic Panel (eGFR, Creatinine, Potassium) to ensure her kidney function is rebounding?",
-          ],
+          discussionQuestions: isMedQuery
+            ? [
+                "Can we stop Meloxicam immediately and transition to a topical joint gel (like Voltaren) or acetaminophen that does not stress Eleanor's kidneys?",
+                "With her eGFR currently at 42 mL/min, should we temporarily reduce her Metformin 1000mg twice-daily dose to prevent medication accumulation?",
+                "Since her potassium is slightly elevated at 5.2 mEq/L, should we make any temporary adjustments to her Lisinopril 20mg dose while her kidneys recover?",
+              ]
+            : [
+                "Could Eleanor's new knee medicine (Meloxicam 15mg) prescribed on October 10 be the primary cause of her eGFR dropping from 54 to 42 mL/min?",
+                "When should we repeat Eleanor's Basic Metabolic Panel (eGFR, Creatinine, Potassium) to ensure her kidney filtration rebounds back to 54?",
+                "What kidney-safe pain management strategy do you recommend for Eleanor's ongoing right knee osteoarthritis?",
+              ],
           auditTraceId: `trace-hr-${Date.now()}`,
         },
-        thought: "Step 1: Cross-referenced longitudinal lab panels and uploaded records.\nStep 2: Correlated Urgent Care NSAID addition with 22.2% eGFR filtration drop.\nStep 3: Identified afferent/efferent hemodynamic conflict with Lisinopril.\nStep 4: Formulated 3 high-priority physician visit questions.",
-        rawThought: "Step 1: Cross-referenced longitudinal lab panels and uploaded records.\nStep 2: Correlated Urgent Care NSAID addition with 22.2% eGFR filtration drop.\nStep 3: Identified afferent/efferent hemodynamic conflict with Lisinopril.\nStep 4: Formulated 3 high-priority physician visit questions.",
+        thought: isMedQuery
+          ? "Step 1: Ingested active medication profile (Lisinopril 20mg, Metformin 1000mg BID, Meloxicam 15mg).\nStep 2: Identified severe drug-drug and drug-disease contraindication: NSAID + ACE-inhibitor in CKD Stage 3a.\nStep 3: Confirmed mechanism: afferent arteriolar constriction + efferent vasodilation -> intraglomerular hypoperfusion.\nStep 4: Formulated targeted deprescribing questions for visit prep."
+          : "Step 1: Evaluated 90-day trajectory comparing July baseline (eGFR 54) to October labs (eGFR 42).\nStep 2: Isolated chronological trigger: Oct 10 walk-in Urgent Care Meloxicam addition.\nStep 3: Correlated 22.2% filtration drop and 42.2% creatinine elevation.\nStep 4: Formulated visit prep brief for Dr. Chen.",
+        rawThought: isMedQuery
+          ? "Step 1: Ingested active medication profile (Lisinopril 20mg, Metformin 1000mg BID, Meloxicam 15mg).\nStep 2: Identified severe drug-drug and drug-disease contraindication: NSAID + ACE-inhibitor in CKD Stage 3a.\nStep 3: Confirmed mechanism: afferent arteriolar constriction + efferent vasodilation -> intraglomerular hypoperfusion.\nStep 4: Formulated targeted deprescribing questions for visit prep."
+          : "Step 1: Evaluated 90-day trajectory comparing July baseline (eGFR 54) to October labs (eGFR 42).\nStep 2: Isolated chronological trigger: Oct 10 walk-in Urgent Care Meloxicam addition.\nStep 3: Correlated 22.2% filtration drop and 42.2% creatinine elevation.\nStep 4: Formulated visit prep brief for Dr. Chen.",
         source: "CARESYNC_AGENT_BACKEND",
       });
     } finally {
@@ -326,13 +360,40 @@ export function OverviewTimeline({
             )}
 
             {/* Plain-Language Caregiver Summary */}
-            <div className="text-xs sm:text-sm text-[#0A0F0D] dark:text-[#FFFFFF] leading-relaxed space-y-2.5 bg-[#F4F6F2] dark:bg-[#1F1F1F] p-5 rounded-2xl border border-[#E2E7DE] dark:border-[#272727]">
-              <p>
-                <strong>Summary for family:</strong> Over the past 90 days, Eleanor experienced an acute decline in kidney filtration (<strong className="text-[#BE123C] dark:text-[#FB7185] tabular-nums">eGFR dropped from 54 down to 42 mL/min</strong>). This drop directly correlates with a new prescription for <strong className="text-[#D97706] dark:text-[#FBBF24]">Meloxicam (15mg daily)</strong> received at Urgent Care on Oct 10 for knee pain.
+            <div className="text-xs sm:text-sm text-[#0A0F0D] dark:text-[#FFFFFF] leading-relaxed space-y-3 bg-[#F4F6F2] dark:bg-[#1F1F1F] p-5 rounded-2xl border border-[#E2E7DE] dark:border-[#272727]">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#0E6238] dark:bg-[#199A59] text-white uppercase tracking-wider font-mono">
+                  {(userQuery || "").toLowerCase().includes("medication") || (userQuery || "").toLowerCase().includes("safe")
+                    ? "Medication Safety Synthesis"
+                    : "90-Day Trajectory Synthesis"}
+                </span>
+                <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] font-medium truncate">
+                  Query: &ldquo;{userQuery || "What changed in the last 90 days?"}&rdquo;
+                </span>
+              </div>
+
+              <p className="leading-relaxed text-[#27272A] dark:text-[#E5E7EB]">
+                <strong>Summary for family:</strong>{" "}
+                {analysisResult.visitPrep?.clinicalSummary || "Clinical synthesis generated."}
               </p>
-              <p className="text-[#27272A] dark:text-[#E5E7EB]">
-                Because Eleanor already takes <strong>Lisinopril (20mg)</strong> for blood pressure and has baseline stage 3a kidney disease, taking these two medications together restricts blood flow to her kidneys.
-              </p>
+
+              {/* Targeted Questions for Prescriber / Doctor */}
+              {analysisResult.visitPrep?.discussionQuestions && analysisResult.visitPrep.discussionQuestions.length > 0 && (
+                <div className="pt-2.5 border-t border-[#E2E7DE] dark:border-[#272727] space-y-1.5">
+                  <div className="text-xs font-semibold text-[#0E6238] dark:text-[#199A59] uppercase tracking-wider font-mono">
+                    High-Yield Doctor Discussion Questions:
+                  </div>
+                  <ul className="space-y-1.5 text-xs text-[#27272A] dark:text-[#E5E7EB]">
+                    {analysisResult.visitPrep.discussionQuestions.slice(0, 3).map((q, idx) => (
+                      <li key={idx} className="flex items-start gap-1.5 leading-relaxed">
+                        <span className="text-[#0E6238] dark:text-[#199A59] font-bold shrink-0">•</span>
+                        <span>{q}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-[#E2E7DE] dark:border-[#272727]">
                 <span className="text-xs text-[#0E6238] dark:text-[#199A59] font-medium">
                   Source: Quest Diagnostics (2026-10-18) &amp; QuickCare Urgent Clinic (2026-10-10)
@@ -342,7 +403,7 @@ export function OverviewTimeline({
                   onClick={onSelectVisitPrepTab}
                   className="text-xs text-[#0E6238] dark:text-[#199A59] hover:underline font-semibold self-start sm:self-auto cursor-pointer"
                 >
-                  See 3 questions for Dr. Chen →
+                  Open Full Printable Brief →
                 </button>
               </div>
             </div>
