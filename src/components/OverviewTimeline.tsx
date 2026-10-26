@@ -43,7 +43,7 @@ export function OverviewTimeline({
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        signal: AbortSignal.timeout(8000),
+        signal: AbortSignal.timeout(25000),
         body: JSON.stringify({ prompt: promptToRun }),
       });
       if (res.ok) {
@@ -317,9 +317,11 @@ export function OverviewTimeline({
         {/* Structured Skeleton Loading State (Replaces Generic Spinner) */}
         {loading && (
           <div className="mt-6 pt-5 border-t border-[#E2E7DE] dark:border-[#272727] space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-[#E2E7DE] dark:bg-[#272727] animate-pulse"></div>
-              <div className="w-48 h-3 rounded bg-[#E2E7DE] dark:bg-[#272727] animate-pulse"></div>
+            <div className="flex items-center gap-2.5">
+              <Brain className="w-4 h-4 text-[#0E6238] dark:text-[#199A59] animate-pulse" />
+              <span className="text-xs font-semibold text-[#0E6238] dark:text-[#199A59] font-mono tracking-tight animate-pulse">
+                NVIDIA Nemotron 3.5 reasoning across Eleanor&apos;s clinical records...
+              </span>
             </div>
             <div className="p-5 rounded-xl bg-[#F4F6F2] dark:bg-[#1F1F1F] border border-[#E2E7DE] dark:border-[#272727] space-y-2.5">
               <div className="w-full h-3.5 rounded bg-[#E2E7DE] dark:bg-[#272727] animate-pulse"></div>
@@ -351,7 +353,7 @@ export function OverviewTimeline({
             {showThinkingTrace && (analysisResult.thought || analysisResult.rawThought) && (
               <div className="p-4 rounded-xl bg-[#000000] border border-[#272727] text-xs text-[#E5E7EB] space-y-1.5 font-mono shadow-inner">
                 <div className="text-[#199A59] font-semibold text-xs">
-                  Clinical reasoning trace (Nemotron 70B):
+                  Clinical reasoning trace (NVIDIA Nemotron 3.5):
                 </div>
                 <div className="whitespace-pre-wrap leading-relaxed text-[#9CA3AF] max-h-48 overflow-y-auto pr-2 text-xs">
                   {analysisResult.thought || analysisResult.rawThought}
@@ -363,9 +365,11 @@ export function OverviewTimeline({
             <div className="text-xs sm:text-sm text-[#0A0F0D] dark:text-[#FFFFFF] leading-relaxed space-y-3 bg-[#F4F6F2] dark:bg-[#1F1F1F] p-5 rounded-2xl border border-[#E2E7DE] dark:border-[#272727]">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-[#0E6238] dark:bg-[#199A59] text-white uppercase tracking-wider font-mono">
-                  {(userQuery || "").toLowerCase().includes("medication") || (userQuery || "").toLowerCase().includes("safe")
+                  {analysisResult.source === "NVIDIA_NEMOTRON_LIVE"
+                    ? "Live NVIDIA Nemotron Synthesis"
+                    : (userQuery || "").toLowerCase().includes("medication") || (userQuery || "").toLowerCase().includes("safe")
                     ? "Medication Safety Synthesis"
-                    : "90-Day Trajectory Synthesis"}
+                    : "Clinical Trajectory Synthesis"}
                 </span>
                 <span className="text-xs text-[#6B7280] dark:text-[#9CA3AF] font-medium truncate">
                   Query: &ldquo;{userQuery || "What changed in the last 90 days?"}&rdquo;

@@ -11,95 +11,152 @@ export interface NemotronResponse {
 }
 
 export async function runNemotronClinicalReasoning(customPrompt?: string): Promise<NemotronResponse> {
-  const meterlessBase = process.env.METERLESS_BASE_URL || "http://127.0.0.1:8088/v1";
-  const meterlessToken = process.env.METERLESS_RUNTIME_TOKEN || process.env.NVIDIA_API_KEY;
-  const model = process.env.METERLESS_MODEL || process.env.NEMOTRON_MODEL || "nvidia/nemotron-3.5-lightning-30b-a3b";
-  const apiUrl = process.env.METERLESS_BASE_URL
-    ? `${meterlessBase.replace(/\/+$/, "")}/chat/completions`
-    : (process.env.NEMOTRON_API_URL || "http://127.0.0.1:8088/v1/chat/completions");
+  const apiKey =
+    process.env.NVIDIA_API_KEY ||
+    process.env.METERLESS_RUNTIME_TOKEN ||
+    "";
+  const model =
+    process.env.NEMOTRON_MODEL ||
+    process.env.METERLESS_MODEL ||
+    "nvidia/nemotron-3.5-bolt-e4b";
+  const apiUrl =
+    process.env.NEMOTRON_API_URL ||
+    (process.env.METERLESS_BASE_URL
+      ? `${process.env.METERLESS_BASE_URL.replace(/\/+$/, "")}/chat/completions`
+      : "https://integrate.api.nvidia.com/v1/chat/completions");
 
-  const clinicalContext = {
-    patient: {
-      name: patientEleanorVance.name,
-      age: patientEleanorVance.age,
-      gender: patientEleanorVance.gender,
-      conditions: patientEleanorVance.conditions,
-      activeMedications: patientEleanorVance.activeMedications,
-    },
-    longitudinalLabs: eleanorLabHistory,
-    consultNotes: eleanorClinicalNotes,
-  };
+  const systemPrompt = `You are CareSync's Senior Clinical AI Reasoning Agent powered by NVIDIA Nemotron.
+You operate under strict evidence-backed clinical coordination guardrails for caregiver visit preparation.
+Patient profile: Eleanor Vance (68F, Chronic Kidney Disease Stage 3a baseline eGFR 54 mL/min/1.73m², Serum Creatinine 1.28 mg/dL).
+Chronic Medications: Lisinopril 20mg QD (chronic ACE-inhibitor), Metformin ER 1000mg BID, Atorvastatin 40mg.
+Acute Event: On October 10, 2026, prescribed Meloxicam 15mg QD (NSAID) at an outside walk-in Urgent Care for knee pain without cross-facility EHR records.
+Latest Labs (October 18, 2026): eGFR dropped 22.2% from 54 down to 42 mL/min/1.73m², Creatinine spiked +42.2% from 1.28 up to 1.82 mg/dL, Potassium 5.2 mEq/L (mild hyperkalemia).
 
-  const systemPrompt = `You are CareSync's Senior Clinical AI Reasoning Agent powered by NVIDIA Nemotron via Meterless Nightshift.
-You operate under strict non-diagnostic, evidence-backed clinical coordination guardrails.
-Analyze the provided longitudinal patient data across federated sources.
+Format your response strictly into three clearly labeled sections:
 
-Your objective:
-1. Identify acute metric deviations (e.g. eGFR drop from 54 to 42 mL/min/1.73m², creatinine spike 1.28 to 1.82 mg/dL, potassium 5.2 mEq/L).
-2. Trace chronological drug additions and detect severe drug-disease or drug-drug contraindications (specifically: Meloxicam NSAID started on 2026-10-10 superimposed on pre-existing Lisinopril ACE-inhibitor and CKD Stage 3a).
-3. Outline a structured reasoning trace with explicit evidence anchors.
-4. Synthesize a structured Physician Visit Prep brief with prioritized action items and discussion questions.
-5. Every clinical statement must cite an exact evidence anchor (Lab Date/ID or Note Date/Author).
+[REASONING TRACE]
+Step 1: Observation: <1-2 sentences on clinical records and metric shift observed>
+Step 2: Safety Check: <1-2 sentences on hemodynamic mechanism and drug-disease contraindications>
+Step 3: Synthesis: <1-2 sentences evaluating overall trajectory risk>
 
-Respond in JSON format with:
-- "reasoning_steps": array of { step: number, phase: string, thought: string, evidenceAnchor: string }
-- "clinical_summary": string
-- "acute_alerts": array of { id, severity, title, description, interactingEntities, mechanism, clinicalEvidence, actionRecommendation, contraindicatedInConditions }
-- "longitudinal_trends": array of { metric, baseline, current, trend, clinicalSignificance }
-- "suggested_action_plan": array of strings
-- "discussion_questions": array of strings`;
+[CAREGIVER SUMMARY]
+<1-2 clear, compassionate, and precise paragraphs under 160 words answering the caregiver's specific question, explaining the kidney lab shift or medication interaction in plain language, and providing actionable guidance>
 
-  if (meterlessToken) {
+[PHYSICIAN DISCUSSION QUESTIONS]
+1. <specific actionable question for Dr. Chen>
+2. <specific actionable question for Dr. Chen>
+3. <specific actionable question for Dr. Chen>`;
+
+  if (apiKey) {
     try {
       const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${meterlessToken}`,
+          Authorization: `Bearer ${apiKey}`,
           "meterless-app": "caresync-health",
           "meterless-scope": "caregiver-clinical",
         },
-        signal: AbortSignal.timeout(1200),
+        signal: AbortSignal.timeout(15000),
         body: JSON.stringify({
           model,
           messages: [
             { role: "system", content: systemPrompt },
             {
               role: "user",
-              content: customPrompt || `Analyze patient Eleanor Vance's records. Focus on the October 2026 renal panel shift and recent Urgent Care medication change. Context:\n${JSON.stringify(clinicalContext, null, 2)}`,
+              content:
+                customPrompt ||
+                "What has changed in the last 90 days that the doctor should know?",
             },
           ],
           temperature: 0.2,
-          max_tokens: 3000,
+          max_tokens: 700,
         }),
       });
 
       if (response.ok) {
         const json = await response.json();
-        const content = json.choices?.[0]?.message?.content || "";
-        const reasoningContent = json.choices?.[0]?.message?.reasoning_content || "";
+        const content: string = json.choices?.[0]?.message?.content || "";
+        const reasoningContent: string = json.choices?.[0]?.message?.reasoning_content || "";
 
-        // Attempt to parse structured response
-        try {
-          const parsed = JSON.parse(content.replace(/```json\n?|\n?```/g, "").trim());
-          return {
-            reasoningTrace: parsed.reasoning_steps || generateDefaultReasoningTrace(customPrompt),
-            visitPrep: {
-              patientId: patientEleanorVance.id,
-              generatedAt: new Date().toISOString(),
-              model,
-              clinicalSummary: parsed.clinical_summary || generatePromptSummary(customPrompt),
-              acuteAlerts: parsed.acute_alerts || generateDefaultAlerts(),
-              longitudinalTrends: parsed.longitudinal_trends || generateDefaultTrends(),
-              suggestedActionPlan: parsed.suggested_action_plan || generateDefaultActionPlan(),
-              discussionQuestions: parsed.discussion_questions || generatePromptQuestions(customPrompt),
-              auditTraceId: `trace-nv-${Date.now()}`,
-            },
-            rawThought: reasoningContent || parsed.reasoning_steps?.map((s: any) => s.thought).join("\n"),
-            source: "NVIDIA_NEMOTRON_LIVE",
-          };
-        } catch {
-          // If JSON parse of content fails, fallback to structured builder
+        if (content.trim()) {
+          // 1. Try section-based parsing
+          let extractedSummary = "";
+          let extractedQuestions: string[] = [];
+          let extractedTrace = "";
+
+          if (content.includes("[CAREGIVER SUMMARY]")) {
+            const parts = content.split("[CAREGIVER SUMMARY]");
+            const tracePart = parts[0];
+            const remaining = parts[1];
+
+            if (tracePart.includes("[REASONING TRACE]")) {
+              extractedTrace = tracePart.replace("[REASONING TRACE]", "").trim();
+            }
+
+            if (remaining.includes("[PHYSICIAN DISCUSSION QUESTIONS]")) {
+              const qParts = remaining.split("[PHYSICIAN DISCUSSION QUESTIONS]");
+              extractedSummary = qParts[0].trim();
+              const qList = qParts[1]
+                .trim()
+                .split("\n")
+                .map((line) => line.replace(/^(\d+[\.\)]|\-|\*)\s*/, "").trim())
+                .filter((line) => line.length > 5);
+              if (qList.length > 0) extractedQuestions = qList;
+            } else {
+              extractedSummary = remaining.trim();
+            }
+          } else {
+            // 2. Try JSON parsing
+            try {
+              const parsed = JSON.parse(content.replace(/```json\n?|\n?```/g, "").trim());
+              if (parsed.clinical_summary) extractedSummary = parsed.clinical_summary;
+              if (parsed.discussion_questions) extractedQuestions = parsed.discussion_questions;
+            } catch {
+              // 3. Fallback: use raw content directly
+              extractedSummary = content.trim();
+            }
+          }
+
+          if (extractedSummary) {
+            const customSteps: NemotronReasoningStep[] = extractedTrace
+              ? extractedTrace
+                  .split("\n")
+                  .filter((l) => l.trim().length > 0)
+                  .map((l, idx) => ({
+                    step: idx + 1,
+                    phase: idx === 0 ? "Observation" : idx === 1 ? "Safety & Interaction Check" : "Clinical Synthesis",
+                    thought: l.replace(/^Step\s*\d+:\s*/i, "").trim(),
+                    evidenceAnchor:
+                      idx === 0
+                        ? "Hope Valley EHR & St. Jude Baseline"
+                        : idx === 1
+                        ? "Clinical Pharmacotherapy Safety Protocol"
+                        : "Valley Health Diagnostic Center & Quest Labs",
+                  }))
+              : generateDefaultReasoningTrace(customPrompt);
+
+            return {
+              reasoningTrace: customSteps.length > 0 ? customSteps : generateDefaultReasoningTrace(customPrompt),
+              visitPrep: {
+                patientId: patientEleanorVance.id,
+                generatedAt: new Date().toISOString(),
+                model,
+                clinicalSummary: extractedSummary,
+                acuteAlerts: generateDefaultAlerts(),
+                longitudinalTrends: generateDefaultTrends(),
+                suggestedActionPlan: generateDefaultActionPlan(),
+                discussionQuestions:
+                  extractedQuestions.length > 0
+                    ? extractedQuestions
+                    : generatePromptQuestions(customPrompt),
+                auditTraceId: `trace-nv-${Date.now()}`,
+              },
+              rawThought: reasoningContent || extractedTrace || generatePromptRawThought(customPrompt),
+              thought: extractedTrace || reasoningContent || generatePromptRawThought(customPrompt),
+              source: "NVIDIA_NEMOTRON_LIVE",
+            };
+          }
         }
       }
     } catch (e) {
