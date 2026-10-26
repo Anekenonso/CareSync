@@ -34,14 +34,28 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 1. Connect to CareSync Python Agent Backend if configured (e.g. on Render)
-    const agentApiUrl = process.env.AGENT_API_URL || process.env.NEXT_PUBLIC_AGENT_API_URL;
+    // 1. Primary Engine: NVIDIA Nemotron 3.5 Clinical Reasoning
+    const result = await runNemotronClinicalReasoning(prompt);
+
+    // If live Nemotron completed, record audit and return immediately
+    if (result.source === "NVIDIA_NEMOTRON_LIVE") {
+      recordAuditAction("read", result.visitPrep.auditTraceId, "NVIDIA Nemotron 3.5 Bolt", {
+        reasoningPhase: "Longitudinal Clinical Synthesis",
+        patientId: result.visitPrep.patientId,
+        acuteAlertsCount: result.visitPrep.acuteAlerts.length,
+        dataSource: result.source,
+      });
+      return NextResponse.json(result);
+    }
+
+    // 2. Secondary Backend: Connect to CareSync Python Agent Backend if configured (e.g. on Render)
+    const agentApiUrl = process.env.AGENT_API_URL;
     if (agentApiUrl) {
       try {
         const backendRes = await fetch(`${agentApiUrl.replace(/\/+$/, "")}/run`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          signal: AbortSignal.timeout(1200),
+          signal: AbortSignal.timeout(3000),
           body: JSON.stringify({
             input: {
               patient_id: "patient-ev-49201",
@@ -66,7 +80,7 @@ export async function POST(req: NextRequest) {
 
           if (data.status === "success" && data.output) {
             const out = data.output;
-            const result = {
+            const backendResult = {
               reasoningTrace: [
                 {
                   step: 1,
@@ -125,26 +139,23 @@ export async function POST(req: NextRequest) {
               source: "CARESYNC_AGENT_BACKEND" as const,
             };
 
-            recordAuditAction("read", result.visitPrep.auditTraceId, "CareSync Agent API (Render)", {
+            recordAuditAction("read", backendResult.visitPrep.auditTraceId, "CareSync Agent API (Render)", {
               reasoningPhase: "Longitudinal Clinical Synthesis",
-              patientId: result.visitPrep.patientId,
-              acuteAlertsCount: result.visitPrep.acuteAlerts.length,
+              patientId: backendResult.visitPrep.patientId,
+              acuteAlertsCount: backendResult.visitPrep.acuteAlerts.length,
               dataSource: "RENDER_AGENT_API",
             });
 
-            return NextResponse.json(result);
+            return NextResponse.json(backendResult);
           }
         }
       } catch (backendError) {
-        console.warn("Backend Agent API call failed or timed out, utilizing local fallback:", backendError);
+        console.warn("Backend Agent API call failed or timed out:", backendError);
       }
     }
 
-    // 2. Local Fallback: Run NVIDIA Nemotron 3.5 Lightning Clinical Reasoning
-    const result = await runNemotronClinicalReasoning(prompt);
-
-    // Record complete audit trail in Meterless Trust Ledger
-    recordAuditAction("read", result.visitPrep.auditTraceId, "Nemotron 3.5 Lightning", {
+    // 3. Record fallback audit and return
+    recordAuditAction("read", result.visitPrep.auditTraceId, "Clinical Evidence Engine", {
       reasoningPhase: "Longitudinal Clinical Synthesis",
       patientId: result.visitPrep.patientId,
       acuteAlertsCount: result.visitPrep.acuteAlerts.length,

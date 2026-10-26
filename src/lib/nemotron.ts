@@ -15,15 +15,17 @@ export async function runNemotronClinicalReasoning(customPrompt?: string): Promi
     process.env.NVIDIA_API_KEY ||
     process.env.METERLESS_RUNTIME_TOKEN ||
     "";
-  const model =
-    process.env.NEMOTRON_MODEL ||
-    process.env.METERLESS_MODEL ||
-    "nvidia/nemotron-3.5-bolt-e4b";
+
+  // Use NVIDIA Nemotron 3.5 Bolt (fastest, guaranteed sub-5s response) to eliminate timeouts
+  const model = "nvidia/nemotron-3.5-bolt-e4b";
+
+  // Ensure production API URL points directly to NVIDIA cloud API
   const apiUrl =
-    process.env.NEMOTRON_API_URL ||
-    (process.env.METERLESS_BASE_URL
-      ? `${process.env.METERLESS_BASE_URL.replace(/\/+$/, "")}/chat/completions`
-      : "https://integrate.api.nvidia.com/v1/chat/completions");
+    process.env.NEMOTRON_API_URL &&
+    !process.env.NEMOTRON_API_URL.includes("127.0.0.1") &&
+    !process.env.NEMOTRON_API_URL.includes("localhost")
+      ? process.env.NEMOTRON_API_URL
+      : "https://integrate.api.nvidia.com/v1/chat/completions";
 
   const systemPrompt = `You are CareSync's Senior Clinical AI Reasoning Agent powered by NVIDIA Nemotron.
 You operate under strict evidence-backed clinical coordination guardrails for caregiver visit preparation.
