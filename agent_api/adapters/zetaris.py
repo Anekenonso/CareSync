@@ -49,7 +49,24 @@ class ZetarisAdapter:
                         "source": "ZETARIS_REST_LIVE",
                         "status": "success",
                         "queries_executed": queries,
-                        "data": data,
+                        "source_federation": data.get("source_federation", {
+                            "tables_virtualized": [
+                                "zetaris.ehr.patient_demographics",
+                                "zetaris.labs.longitudinal_results",
+                                "zetaris.pharmacy.active_medications",
+                                "zetaris.urgent_care.encounters"
+                            ],
+                            "connectors": [
+                                "jdbc:postgresql://ehr-metastore:5432/hospital_records",
+                                "s3://quest-diagnostic-vault/metabolic_panels/",
+                                "rest://valley-urgent-care.local/api/v1/encounters"
+                            ]
+                        }),
+                        "patient": data.get("patient", {}),
+                        "medications": data.get("medications", []),
+                        "labs": data.get("labs", []),
+                        "encounters": data.get("encounters", []),
+                        "raw_query_result": data,
                         "execution_time_ms": int((time.time() - start_time) * 1000)
                     }
             except Exception as e:

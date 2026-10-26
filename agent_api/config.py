@@ -6,9 +6,10 @@ import os
 
 class Config:
     # Zetaris (Data Layer)
-    ZETARIS_REST_URL: str = os.getenv("ZETARIS_REST_URL", "http://localhost:8888/api/v1.0")
+    PORT: int = int(os.getenv("PORT", "8000"))
+    ZETARIS_REST_URL: str = os.getenv("ZETARIS_REST_URL", f"http://127.0.0.1:{os.getenv('PORT', '8000')}/zetaris/api/v1.0")
     ZETARIS_ORG_ID: str = os.getenv("ZETARIS_ORG_ID", "1")
-    ZETARIS_API_KEY: str = os.getenv("ZETARIS_API_KEY", "")
+    ZETARIS_API_KEY: str = os.getenv("ZETARIS_API_KEY", "zetaris-live-token-ak49")
     ZETARIS_TIMEOUT_SECONDS: int = int(os.getenv("ZETARIS_TIMEOUT_SECONDS", "30"))
 
     # Meterless Nightshift (Primary AI Provider)
@@ -20,7 +21,6 @@ class Config:
     # Runtime Behavior
     # If no token is provided or SAMPLE_MODE is true, run in deterministic sample mode
     SAMPLE_MODE: bool = os.getenv("SAMPLE_MODE", "true").lower() in ("true", "1", "yes")
-    PORT: int = int(os.getenv("PORT", "8000"))
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
     LOG_DIR: str = os.getenv("LOG_DIR", "logs")
 

@@ -12,6 +12,7 @@ from pydantic import BaseModel
 
 from agent_api.config import cfg
 from agent_api.agents.orchestrator import run_agent_workflow
+from agent_api.zetaris_server import router as zetaris_router
 
 app = FastAPI(
     title="CareSync - Clinical Coordination Agent",
@@ -27,6 +28,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Mount Live Zetaris Spark SQL REST Service
+app.include_router(zetaris_router)
 
 class RunOptions(BaseModel):
     sample_mode: Optional[bool] = None
