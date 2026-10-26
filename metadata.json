@@ -40,7 +40,7 @@
   },
   "entry_points": {
     "programmatic": "python run.py",
-    "http_endpoint": "POST http://localhost:8000/run",
+    "http_endpoint": "POST https://caresync-agent-j75h.onrender.com/run (local: POST http://localhost:8000/run)",
     "web_ui": "http://localhost:3000"
   },
   "sample_mode": {
