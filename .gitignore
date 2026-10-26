@@ -62,6 +62,8 @@ Thumbs.db
 docs/SLIDE_DECK.md
 *pitch-deck*
 pitch-deck.html
+generate_deck_pdf.js
+deck_preview/
 claude-code-video-toolkit/
 videos/
 video/

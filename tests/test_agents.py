@@ -4,6 +4,10 @@ and offline SAMPLE_MODE reproducibility.
 Run with:
   python -m unittest tests/test_agents.py
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import unittest
 import os
 from agent_api.agents.orchestrator import run_agent_workflow

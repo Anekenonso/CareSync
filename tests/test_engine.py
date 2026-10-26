@@ -3,6 +3,10 @@ Verifies 3-tier memory store, conflict detection, and append-only Trust Ledger.
 Run with:
   python -m unittest tests/test_engine.py
 """
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 import unittest
 from agent_api.engines.hmem import HMEMEngine
 
