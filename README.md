@@ -2,9 +2,7 @@
 
 > **Open Agent Hackathon 2026** | Hosted by **GenAI.Works**  
 > **Primary Track:** Track 02 — The Agent That Can Explain Why  
-> **Secondary Track:** Track 03 — Reasoning Architecture  
-> **Build Framework:** Strictly compliant with `Prove-It Build Plan v3` & `Open Agent Hackathon Instruction Pack`  
-> **Repository:** [github.com/Anekenonso/CareSync](https://github.com/Anekenonso/CareSync)
+> **Secondary Track:** Track 03 — Reasoning Architecture
 
 ---
 
@@ -18,7 +16,6 @@
    - [Zetaris Networked Data Platform](#1-zetaris-networked-data-platform-in-situ-data-virtualization)
    - [Meterless World Model & H-MEM](#2-meterless-world-model--h-mem-longitudinal-memory)
    - [NVIDIA Nemotron 3.5 Lightning](#3-nvidia-nemotron-35-lightning-dual-loop-reasoning)
-   - [Cursor IDE Development Workflow](#4-cursor-ide-agentic-development-workflow)
 7. [Proof Experiment & Removal Tests](#proof-experiment--removal-tests)
 8. [Real vs Simulated Labeling Matrix](#real-vs-simulated-labeling-matrix)
 9. [Authority Boundaries & Safety Invariants](#authority-boundaries--safety-invariants)
@@ -167,10 +164,6 @@ Caregiver Request / Document Upload
   1. An auditable, transparent `<thought>` trace detailing internal clinical hypothesis verification and risk ranking.
   2. A plain-English, non-clinical caregiver briefing where every factual claim is tethered to a timestamped source document.
 - **Safety Gate Integration:** If a caregiver enters a diagnostic prompt (*"Does Mom have renal failure?"*), the agent loop intercepts the intent and redirects the caregiver to physician-guided questions (verified in Test T03).
-
-### 4. Cursor IDE (Agentic Development Workflow)
-- **Role in CareSync:** Cursor served as the primary development environment throughout the hackathon lifecycle.
-- **How It Was Used:** Cursor Composer, `.cursorrules`, and agentic pair-programming workflows were used to scaffold the multi-agent orchestration loop, write Zetaris and Nightshift adapters, implement strict type contracts, and run rapid TDD loops for the test suite.
 
 ---
 
@@ -422,4 +415,4 @@ Open [http://localhost:3000](http://localhost:3000) in your web browser.
 
 ---
 
-*Open Agent Hackathon 2026 · Strictly following the Prove-It Build Plan v3 · GenAI.Works*
+*Open Agent Hackathon 2026 · GenAI.Works*

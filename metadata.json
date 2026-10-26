@@ -36,10 +36,6 @@
         "nvidia/nemotron-3.5-lightning-30b-a3b",
         "nvidia/nemotron-3-super-120b-a12b"
       ]
-    },
-    "cursor": {
-      "role": "Development Tool",
-      "description": "Scaffolded repository architecture, generated type contracts, implemented multi-agent state machines, and developed test suites."
     }
   },
   "entry_points": {
