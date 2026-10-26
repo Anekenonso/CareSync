@@ -28,7 +28,40 @@ class ZetarisAdapter:
         if sample_mode or cfg.SAMPLE_MODE or not self.api_key:
             return self._sample_query_fallback(patient_identifier, queries, start_time)
 
-        # Attempt live Zetaris REST API query with retry
+        # 1. If running against the local Zetaris engine, execute directly to avoid single-worker loopback deadlock
+        is_local = "127.0.0.1" in self.rest_url or "localhost" in self.rest_url
+        if is_local:
+            try:
+                from agent_api.zetaris_server import execute_zetaris_query, ZetarisQueryPayload
+                data = execute_zetaris_query(ZetarisQueryPayload(sql=queries[1], max_rows=100, patient_id=patient_identifier))
+                return {
+                    "source": "ZETARIS_REST_LIVE",
+                    "status": "success",
+                    "queries_executed": queries,
+                    "source_federation": data.get("source_federation", {
+                        "tables_virtualized": [
+                            "zetaris.ehr.patient_demographics",
+                            "zetaris.labs.longitudinal_results",
+                            "zetaris.pharmacy.active_medications",
+                            "zetaris.urgent_care.encounters"
+                        ],
+                        "connectors": [
+                            "jdbc:postgresql://ehr-metastore:5432/hospital_records",
+                            "s3://quest-diagnostic-vault/metabolic_panels/",
+                            "rest://valley-urgent-care.local/api/v1/encounters"
+                        ]
+                    }),
+                    "patient": data.get("patient", {}),
+                    "medications": data.get("medications", []),
+                    "labs": data.get("labs", []),
+                    "encounters": data.get("encounters", []),
+                    "raw_query_result": data,
+                    "execution_time_ms": int((time.time() - start_time) * 1000)
+                }
+            except Exception:
+                pass
+
+        # 2. Attempt remote Zetaris REST API query with retry
         for attempt in range(1, 3):
             try:
                 headers = {
