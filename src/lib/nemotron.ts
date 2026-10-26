@@ -7,7 +7,7 @@ export interface NemotronResponse {
   visitPrep: PhysicianVisitPrep;
   rawThought?: string;
   thought?: string;
-  source: "NVIDIA_NEMOTRON_LIVE" | "EVIDENCE_FALLBACK";
+  source: "NVIDIA_NEMOTRON_LIVE" | "EVIDENCE_FALLBACK" | "CARESYNC_AGENT_BACKEND";
 }
 
 export async function runNemotronClinicalReasoning(customPrompt?: string): Promise<NemotronResponse> {

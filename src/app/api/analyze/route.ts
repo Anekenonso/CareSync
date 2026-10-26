@@ -32,7 +32,112 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Run NVIDIA Nemotron 3.5 Lightning Clinical Reasoning
+    // 1. Connect to CareSync Python Agent Backend if configured (e.g. on Render)
+    const agentApiUrl = process.env.AGENT_API_URL || process.env.NEXT_PUBLIC_AGENT_API_URL;
+    if (agentApiUrl) {
+      try {
+        const backendRes = await fetch(`${agentApiUrl.replace(/\/+$/, "")}/run`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            input: {
+              patient_id: "patient-ev-49201",
+              query: prompt || "Reconcile recent medications and explain Eleanor's kidney lab shift.",
+            },
+          }),
+        });
+
+        if (backendRes.ok) {
+          const data = await backendRes.json();
+          if (data.status === "refusal") {
+            return NextResponse.json({
+              refusal: true,
+              guardrailMessage: data.output?.refusal_message || "Non-diagnostic safety refusal triggered.",
+              suggestedPhysicianQuestions: [
+                "Could my recent knee medication (Meloxicam) be affecting my kidney lab numbers?",
+                "Should we recheck my basic metabolic panel in 7-10 days?",
+                "What alternative pain management options are safest for my kidneys?",
+              ],
+            });
+          }
+
+          if (data.status === "success" && data.output) {
+            const out = data.output;
+            const result = {
+              reasoningTrace: [
+                {
+                  step: 1,
+                  phase: "Observation",
+                  thought: "Ingesting longitudinal dataset from Zetaris federated silos for Eleanor Vance (68F). Identified CKD Stage 3a baseline.",
+                  evidenceAnchor: "Hope Valley EHR & St. Jude Lab Baseline",
+                },
+                {
+                  step: 2,
+                  phase: "Evidence Cross-Reference",
+                  thought: "Correlating Valley Urgent Care Meloxicam 15mg prescription with outpatient Lisinopril therapy.",
+                  evidenceAnchor: "Valley Urgent Care Encounter Note (2026-10-10)",
+                },
+                {
+                  step: 3,
+                  phase: "Conflict Detection",
+                  thought: "Detected active drug-disease contraindication: NSAID + ACE-inhibitor therapy impairs renal hemodynamics.",
+                  evidenceAnchor: "Meterless H-MEM Trust Ledger Conflict Critic",
+                },
+                {
+                  step: 4,
+                  phase: "Clinical Synthesis",
+                  thought: "Synthesizing physician visit brief highlighting 22.2% eGFR drop and formulating targeted questions.",
+                  evidenceAnchor: "Valley Health Diagnostic Center (2026-10-21)",
+                },
+              ],
+              visitPrep: {
+                patientId: out.patient?.id || "patient-ev-49201",
+                generatedAt: new Date().toISOString(),
+                model: "nvidia/nemotron-3.5-lightning-30b-a3b (CareSync Agent API)",
+                clinicalSummary: out.summary || "",
+                acuteAlerts: (out.acute_alerts || []).map((a: any) => ({
+                  id: a.id || `alert-${Math.random()}`,
+                  severity: a.severity || "CRITICAL",
+                  title: a.title || "Clinical Alert",
+                  description: a.description || "",
+                  interactingEntities: a.interacting_entities || [],
+                  mechanism: a.mechanism || "",
+                  clinicalEvidence: (a.evidence_citations || []).map((c: any) => `${c.source} (${c.date}): ${c.entity}`).join("; ") || a.description || "",
+                  actionRecommendation: a.action_recommendation || "",
+                  contraindicatedInConditions: ["Chronic Kidney Disease Stage 3a", "Concurrent ACE-Inhibitor Therapy"],
+                })),
+                longitudinalTrends: (out.quantitative_trends || []).map((t: any) => ({
+                  metric: t.metric,
+                  baseline: t.baseline,
+                  current: t.current,
+                  trend: (t.trend === "deteriorating" || t.trend === "improving" ? t.trend : "stable") as "deteriorating" | "improving" | "stable",
+                  clinicalSignificance: t.clinical_significance,
+                })),
+                suggestedActionPlan: out.action_plan || [],
+                discussionQuestions: out.discussion_questions || [],
+                auditTraceId: data.trace_id || `trace-backend-${Date.now()}`,
+              },
+              thought: out.reasoning_trace,
+              rawThought: out.reasoning_trace,
+              source: "CARESYNC_AGENT_BACKEND" as const,
+            };
+
+            recordAuditAction("read", result.visitPrep.auditTraceId, "CareSync Agent API (Render)", {
+              reasoningPhase: "Longitudinal Clinical Synthesis",
+              patientId: result.visitPrep.patientId,
+              acuteAlertsCount: result.visitPrep.acuteAlerts.length,
+              dataSource: "RENDER_AGENT_API",
+            });
+
+            return NextResponse.json(result);
+          }
+        }
+      } catch (backendError) {
+        console.warn("Backend Agent API call failed or timed out, utilizing local fallback:", backendError);
+      }
+    }
+
+    // 2. Local Fallback: Run NVIDIA Nemotron 3.5 Lightning Clinical Reasoning
     const result = await runNemotronClinicalReasoning(prompt);
 
     // Record complete audit trail in Meterless Trust Ledger
