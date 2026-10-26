@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
         const backendRes = await fetch(`${agentApiUrl.replace(/\/+$/, "")}/run`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          signal: AbortSignal.timeout(4500),
           body: JSON.stringify({
             input: {
               patient_id: "patient-ev-49201",

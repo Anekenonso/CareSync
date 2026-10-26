@@ -59,6 +59,7 @@ Respond in JSON format with:
           "meterless-app": "caresync-health",
           "meterless-scope": "caregiver-clinical",
         },
+        signal: AbortSignal.timeout(4500),
         body: JSON.stringify({
           model,
           messages: [

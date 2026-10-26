@@ -43,6 +43,7 @@ export function OverviewTimeline({
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: AbortSignal.timeout(8000),
         body: JSON.stringify({ prompt: promptToRun }),
       });
       const data = await res.json();
