@@ -41,7 +41,7 @@
   "entry_points": {
     "programmatic": "python run.py",
     "http_endpoint": "POST https://caresync-agent-j75h.onrender.com/run (local: POST http://localhost:8000/run)",
-    "web_ui": "http://localhost:3000"
+    "web_ui": "https://caresync-woad.vercel.app (local: http://localhost:3000)"
   },
   "sample_mode": {
     "supported": true,
