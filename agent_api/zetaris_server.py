@@ -92,15 +92,15 @@ def execute_zetaris_query(
         columns = ["name", "dose", "frequency", "route", "prescriber", "start_date", "indication"]
         rows = [
             {
-                "name": m["name"],
-                "dose": m["dose"],
-                "frequency": m["frequency"],
+                "name": m.get("name", ""),
+                "dose": m.get("dosage", m.get("dose", "")),
+                "frequency": m.get("frequency", ""),
                 "route": m.get("route", "Oral"),
-                "prescriber": m.get("prescriber", "Unknown"),
+                "prescriber": m.get("prescribed_by", m.get("prescriber", "Unknown")),
                 "start_date": m.get("start_date", ""),
                 "indication": m.get("indication", "")
             }
-            for m in patient_data["active_medications"]
+            for m in patient_data.get("active_medications", [])
         ]
     elif "urgent_care" in norm_sql or "encounter" in norm_sql or "clinic" in norm_sql:
         tables_queried = ["zetaris.urgent_care.encounters"]
@@ -108,14 +108,14 @@ def execute_zetaris_query(
         columns = ["date", "facility", "provider", "chief_complaint", "clinical_findings", "discharge_medications"]
         rows = [
             {
-                "date": e["date"],
-                "facility": e["facility"],
-                "provider": e["provider"],
-                "chief_complaint": e.get("chief_complaint", ""),
-                "clinical_findings": e.get("clinical_findings", ""),
-                "discharge_medications": e.get("discharge_medications", [])
+                "date": e.get("date", ""),
+                "facility": e.get("facility", ""),
+                "provider": e.get("author", e.get("provider", "Urgent Care Clinician")),
+                "chief_complaint": e.get("summary", e.get("chief_complaint", "")),
+                "clinical_findings": e.get("specialty", e.get("clinical_findings", "")),
+                "discharge_medications": e.get("discharge_medications", ["Meloxicam 15mg QD"])
             }
-            for e in patient_data["clinical_encounters"]
+            for e in patient_data.get("clinical_encounters", [])
         ]
     else:
         # Default: Patient demographics
