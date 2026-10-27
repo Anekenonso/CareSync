@@ -4,6 +4,7 @@ import "./globals.css";
 import { ShieldAlert } from "lucide-react";
 import { NavigationHeader } from "@/components/NavigationHeader";
 import { CaregiverProvider } from "@/context/CaregiverContext";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "CareSync | Family Health Evidence & Coordination",
@@ -111,6 +112,7 @@ export default function RootLayout({
             </div>
           </footer>
         </CaregiverProvider>
+        <Analytics />
       </body>
     </html>
   );

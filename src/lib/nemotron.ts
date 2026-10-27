@@ -16,8 +16,11 @@ export async function runNemotronClinicalReasoning(customPrompt?: string): Promi
     process.env.METERLESS_RUNTIME_TOKEN ||
     "";
 
-  // Use NVIDIA Nemotron 3.5 Bolt (fastest, guaranteed sub-5s response) to eliminate timeouts
-  const model = "nvidia/nemotron-3.5-bolt-e4b";
+  // Use configured model or default to fast Nemotron Bolt engine to prevent Vercel timeouts
+  const model =
+    process.env.NEMOTRON_MODEL ||
+    process.env.METERLESS_MODEL ||
+    "nvidia/nemotron-3.5-bolt-e4b";
 
   // Ensure production API URL points directly to NVIDIA cloud API
   const apiUrl =
